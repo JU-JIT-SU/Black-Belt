@@ -14,15 +14,15 @@ interface AdminDashboardCardsProps {
 }
 
 const iconToneClassMap: Record<DashboardCardTone, string> = {
-  slate: 'bg-white/[0.08] text-white/70 ring-white/[0.06]',
-  blue: 'bg-blue-500/[0.15] text-blue-400 ring-blue-500/[0.1]',
-  green: 'bg-emerald-500/[0.15] text-emerald-400 ring-emerald-500/[0.1]',
-  amber: 'bg-amber-500/[0.15] text-amber-400 ring-amber-500/[0.1]',
-  red: 'bg-red-500/[0.15] text-red-400 ring-red-500/[0.1]',
+  slate: 'bg-white/[0.08] text-white/70 ring-white/[0.06] light:bg-gray-100 light:text-gray-600 light:ring-gray-200',
+  blue: 'bg-blue-500/[0.15] text-blue-400 ring-blue-500/[0.1] light:text-blue-600',
+  green: 'bg-emerald-500/[0.15] text-emerald-400 ring-emerald-500/[0.1] light:text-emerald-600',
+  amber: 'bg-amber-500/[0.15] text-amber-400 ring-amber-500/[0.1] light:text-amber-600',
+  red: 'bg-red-500/[0.15] text-red-400 ring-red-500/[0.1] light:text-red-600',
 };
 
 const topLineClassMap: Record<DashboardCardTone, string> = {
-  slate: 'bg-zinc-900',
+  slate: 'bg-zinc-900 light:bg-zinc-300',
   blue: 'bg-blue-600',
   green: 'bg-emerald-600',
   amber: 'bg-amber-500',
