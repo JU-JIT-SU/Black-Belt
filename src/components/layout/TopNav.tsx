@@ -11,6 +11,7 @@ import {
   X,
   Sun,
   Moon,
+  LayoutDashboard,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useAuth } from '@/hooks/useAuth';
@@ -196,6 +197,7 @@ export default function TopNav() {
                                  hover:bg-white/[0.06] hover:text-white transition-colors
                                  light:text-[#374151] light:hover:bg-black/[0.05] light:hover:text-[#0f1117]"
                     >
+                      <LayoutDashboard size={15} aria-hidden="true" />
                       관리자 대시보드
                     </Link>
                     <div className="h-px bg-white/[0.06] light:bg-black/[0.08]" />
