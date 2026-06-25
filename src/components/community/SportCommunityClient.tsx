@@ -346,7 +346,7 @@ export default function SportCommunityClient({ initialPosts, sport }: SportCommu
                         flexShrink: 0,
                       }}
                     >
-                      <Image src={image} alt={name} width={20} height={20} style={{ objectFit: 'contain' }} />
+                      <Image src={image} alt={name} width={20} height={20} style={{ objectFit: 'contain' }} className="light:invert" />
                     </div>
                     <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-text-primary)' }}>{name}</span>
                     <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: color, marginLeft: 'auto', flexShrink: 0 }} />
@@ -503,7 +503,7 @@ export default function SportCommunityClient({ initialPosts, sport }: SportCommu
                             flexShrink: 0,
                           }}
                         >
-                          <Image src={image} alt={name} width={20} height={20} style={{ objectFit: 'contain' }} />
+                          <Image src={image} alt={name} width={20} height={20} style={{ objectFit: 'contain' }} className="light:invert" />
                         </div>
                         <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-text-primary)' }}>{name}</span>
                         <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: color, marginLeft: 'auto', flexShrink: 0 }} />
@@ -539,7 +539,7 @@ export default function SportCommunityClient({ initialPosts, sport }: SportCommu
                           flexShrink: 0,
                         }}
                       >
-                        <Image src={image} alt={name} width={20} height={20} style={{ objectFit: 'contain' }} />
+                        <Image src={image} alt={name} width={20} height={20} style={{ objectFit: 'contain' }} className="light:invert" />
                       </div>
                       <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-text-high)' }}>{name}</span>
                     </Link>
