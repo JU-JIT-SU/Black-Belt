@@ -1,8 +1,9 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   LayoutDashboard,
   FileText,
@@ -12,6 +13,8 @@ import {
   LogOut,
   Sun,
   Moon,
+  UserCircle,
+  ExternalLink,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useAuth } from '@/hooks/useAuth';
@@ -27,10 +30,22 @@ const ADMIN_NAV_ITEMS = [
 export default function AdminTopNav() {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
-  const { user, logout } = useAuth();
+  const { user, loading, logout } = useAuth();
   const [mounted, setMounted] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { setMounted(true); }, []);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
     <nav
@@ -93,8 +108,21 @@ export default function AdminTopNav() {
         })}
       </div>
 
-      {/* 우측: 테마 토글 + 유저 + 로그아웃 */}
+      {/* 우측: 커뮤니티 복귀 + 테마 토글 + 유저 드롭다운 */}
       <div className="flex items-center gap-2 shrink-0">
+        {/* 커뮤니티로 돌아가기 */}
+        <Link
+          href="/community"
+          className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors duration-200 mr-1
+                     text-[#a1a1aa] hover:text-white hover:bg-white/[0.06]
+                     light:text-[#6b7280] light:hover:text-[#0f1117] light:hover:bg-black/[0.06]"
+          aria-label="커뮤니티 페이지로 이동"
+        >
+          <ExternalLink size={13} aria-hidden="true" />
+          커뮤니티
+        </Link>
+
+        {/* 테마 토글 */}
         {mounted && (
           <button
             type="button"
@@ -108,32 +136,90 @@ export default function AdminTopNav() {
           </button>
         )}
 
-        {user && (
-          <>
-            <div
-              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border"
-              style={{
-                background: 'var(--color-btn-basic)',
-                borderColor: 'var(--color-border-medium)',
-              }}
-            >
-              <span className="text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
-                {user.name ?? '관리자'}
-              </span>
-            </div>
-
+        {/* 유저 영역 — TopNav와 동일한 드롭다운 */}
+        {loading ? (
+          <div
+            className="w-9 h-9 rounded-full bg-white/10 light:bg-black/[0.1] animate-pulse"
+            aria-hidden="true"
+          />
+        ) : user ? (
+          <div className="relative" ref={dropdownRef}>
             <button
               type="button"
-              onClick={() => logout()}
-              aria-label="로그아웃"
-              className="w-9 h-9 flex items-center justify-center rounded-lg transition-colors
-                         text-white/60 hover:text-white hover:bg-white/[0.06]
-                         light:text-[#6b7280] light:hover:text-[#0f1117] light:hover:bg-black/[0.06]"
+              onClick={() => setDropdownOpen((v) => !v)}
+              className="flex items-center gap-2.5 px-3 py-1.5 rounded-full border border-white/10
+                         bg-white/[0.05] hover:bg-white/[0.09] hover:border-white/20
+                         transition-all duration-200 cursor-pointer
+                         light:border-black/[0.1] light:bg-black/[0.04] light:hover:bg-black/[0.08] light:hover:border-black/[0.15]"
+              aria-expanded={dropdownOpen}
+              aria-haspopup="true"
+              aria-label="계정 메뉴 열기"
             >
-              <LogOut size={16} />
+              <div className="w-7 h-7 rounded-full bg-white/15 light:bg-black/[0.08] flex items-center justify-center overflow-hidden shrink-0">
+                {user.image ? (
+                  <Image
+                    src={user.image}
+                    alt=""
+                    width={28}
+                    height={28}
+                    className="object-cover"
+                  />
+                ) : (
+                  <span className="text-xs font-semibold text-white light:text-[#0f1117] select-none">
+                    {user.name?.[0] ?? '?'}
+                  </span>
+                )}
+              </div>
+              <span className="text-sm font-medium text-white light:text-[#0f1117] max-w-[96px] truncate hidden sm:block">
+                {user.name ?? '관리자'}
+              </span>
             </button>
-          </>
-        )}
+
+            {dropdownOpen && (
+              <div
+                className="absolute right-0 top-full mt-2 w-44 rounded-xl overflow-hidden
+                           border border-white/10 light:border-black/[0.1] shadow-2xl"
+                style={{ background: 'var(--color-bg-surface)' }}
+              >
+                <Link
+                  href="/community"
+                  onClick={() => setDropdownOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 text-sm text-[#d1d5db]
+                             hover:bg-white/[0.06] hover:text-white transition-colors
+                             light:text-[#374151] light:hover:bg-black/[0.05] light:hover:text-[#0f1117]"
+                >
+                  <ExternalLink size={15} aria-hidden="true" />
+                  커뮤니티로 이동
+                </Link>
+                <div className="h-px bg-white/[0.06] light:bg-black/[0.08]" />
+                <Link
+                  href="/mypage"
+                  onClick={() => setDropdownOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 text-sm text-[#d1d5db]
+                             hover:bg-white/[0.06] hover:text-white transition-colors
+                             light:text-[#374151] light:hover:bg-black/[0.05] light:hover:text-[#0f1117]"
+                >
+                  <UserCircle size={15} aria-hidden="true" />
+                  마이페이지
+                </Link>
+                <div className="h-px bg-white/[0.06] light:bg-black/[0.08]" />
+                <button
+                  type="button"
+                  onClick={() => {
+                    logout();
+                    setDropdownOpen(false);
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3 text-sm text-[#d1d5db]
+                             hover:bg-white/[0.06] hover:text-white transition-colors cursor-pointer
+                             light:text-[#374151] light:hover:bg-black/[0.05] light:hover:text-[#0f1117]"
+                >
+                  <LogOut size={15} aria-hidden="true" />
+                  로그아웃
+                </button>
+              </div>
+            )}
+          </div>
+        ) : null}
       </div>
     </nav>
   );
