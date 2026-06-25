@@ -341,7 +341,7 @@ export default function SportCommunityClient({ initialPosts, sport }: SportCommu
                     <div
                       style={{
                         width: '34px', height: '34px', borderRadius: '50%',
-                        background: color + '1a', border: `1.5px solid ${color}66`,
+                        background: color + '33', border: `1.5px solid ${color}88`,
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         flexShrink: 0,
                       }}
@@ -373,12 +373,12 @@ export default function SportCommunityClient({ initialPosts, sport }: SportCommu
                   <div
                     style={{
                       width: '34px', height: '34px', borderRadius: '50%',
-                      background: color + '1a', border: `1.5px solid ${color}44`,
+                      background: color + '33', border: `1.5px solid ${color}66`,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       flexShrink: 0,
                     }}
                   >
-                    <Image src={image} alt={name} width={20} height={20} style={{ objectFit: 'contain' }} />
+                    <Image src={image} alt={name} width={20} height={20} style={{ objectFit: 'contain' }} className="light:invert" />
                   </div>
                   <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-text-high)' }}>{name}</span>
                 </Link>
@@ -498,7 +498,7 @@ export default function SportCommunityClient({ initialPosts, sport }: SportCommu
                         <div
                           style={{
                             width: '34px', height: '34px', borderRadius: '50%',
-                            background: color + '1a', border: `1.5px solid ${color}66`,
+                            background: color + '33', border: `1.5px solid ${color}88`,
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             flexShrink: 0,
                           }}
@@ -534,7 +534,7 @@ export default function SportCommunityClient({ initialPosts, sport }: SportCommu
                       <div
                         style={{
                           width: '34px', height: '34px', borderRadius: '50%',
-                          background: color + '1a', border: `1.5px solid ${color}44`,
+                          background: color + '33', border: `1.5px solid ${color}66`,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           flexShrink: 0,
                         }}
