@@ -320,7 +320,7 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
               <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#2563eb', marginLeft: 'auto', flexShrink: 0 }} />
             </div>
 
-            {SPORTS.map(({ slug, name, icon, color }) => (
+            {SPORTS.map(({ slug, name, icon, iconSize, color }) => (
               <Link
                 key={slug}
                 href={`/community/sport/${slug}`}
@@ -342,7 +342,7 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
                     width: '34px', height: '34px', borderRadius: '50%',
                     background: color + '33', border: `1.5px solid ${color}66`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '17px', flexShrink: 0,
+                    fontSize: iconSize, flexShrink: 0,
                   }}
                 >
                   {icon}
@@ -440,7 +440,7 @@ export default function CommunityClient({ initialPosts }: CommunityClientProps) 
                   <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-text-primary)' }}>공지</span>
                   <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#2563eb', marginLeft: 'auto', flexShrink: 0 }} />
                 </div>
-                {SPORTS.map(({ slug, name, icon, color }) => (
+                {SPORTS.map(({ slug, name, icon, iconSize, color }) => (
                   <Link
                     key={slug}
                     href={`/community/sport/${slug}`}

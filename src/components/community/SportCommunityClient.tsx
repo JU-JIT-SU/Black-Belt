@@ -325,7 +325,7 @@ export default function SportCommunityClient({ initialPosts, sport }: SportCommu
               <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-text-high)' }}>공지</span>
             </Link>
 
-            {SPORTS.map(({ slug, name, icon, color }) => {
+            {SPORTS.map(({ slug, name, icon, iconSize, color }) => {
               const isActive = slug === sport.slug;
               if (isActive) {
                 return (
@@ -343,7 +343,7 @@ export default function SportCommunityClient({ initialPosts, sport }: SportCommu
                         width: '34px', height: '34px', borderRadius: '50%',
                         background: color + '33', border: `1.5px solid ${color}88`,
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: '17px', flexShrink: 0,
+                        fontSize: iconSize, flexShrink: 0,
                       }}
                     >
                       {icon}
@@ -486,7 +486,7 @@ export default function SportCommunityClient({ initialPosts, sport }: SportCommu
                   </div>
                   <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-text-high)' }}>공지</span>
                 </Link>
-                {SPORTS.map(({ slug, name, icon, color }) => {
+                {SPORTS.map(({ slug, name, icon, iconSize, color }) => {
                   const isActive = slug === sport.slug;
                   if (isActive) {
                     return (
