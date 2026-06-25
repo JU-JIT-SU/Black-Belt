@@ -205,7 +205,8 @@ export default function TopNav() {
                   href="/mypage"
                   onClick={() => setDropdownOpen(false)}
                   className="flex items-center gap-3 px-4 py-3 text-sm text-[#d1d5db]
-                             hover:bg-white/[0.06] hover:text-white transition-colors"
+                             hover:bg-white/[0.06] hover:text-white transition-colors
+                             light:text-[#374151] light:hover:bg-black/[0.05] light:hover:text-[#0f1117]"
                 >
                   <UserCircle size={15} aria-hidden="true" />
                   마이페이지
