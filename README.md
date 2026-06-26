@@ -36,9 +36,151 @@
 
 ---
 
-## 시스템 아키텍처 및 비즈니스 로직 플로우
+## 비즈니스 로직 플로우
 
-![비즈니스 로직 플로우](public/docs/business-flow.png)
+### ① 인증 · 역할 분기
+
+```mermaid
+flowchart TD
+    A([사용자 접속]) --> B["세션 확인\nsupabase.auth.getUser"]
+    B --> C{로그인 상태?}
+    C -- "아니오" --> D["공개 페이지\n커뮤니티 · 대회 · 도장찾기"]
+    D --> E["use cache 조회\n읽기 전용 종료"]
+    C -- "예" --> F{역할: admin?}
+    F -- "예" --> G["관리자 대시보드\n→ 차트 ⑤에서 계속"]
+    F -- "아니오" --> H{역할: dojang?}
+    H -- "예" --> I["도장 계정 진입\n→ 차트 ②에서 계속"]
+    H -- "아니오" --> J["일반 유저 진입\n→ 차트 ②③에서 계속"]
+
+    classDef decision fill:#ddd6fe,stroke:#7c3aed,color:#3b0764
+    classDef action  fill:#ede9fe,stroke:#7c3aed,color:#3b0764
+    classDef side    fill:#f3f4f6,stroke:#9ca3af,color:#374151
+    classDef done    fill:#d1fae5,stroke:#059669,color:#064e3b
+
+    class C,F,H decision
+    class B action
+    class D,E side
+    class G,I,J done
+```
+
+### ② 게시글 CRUD
+
+```mermaid
+flowchart TD
+    subgraph WRITE["작성 · 수정"]
+        A([작성 요청]) --> B["카테고리 선택\npersonal · promo · notice"]
+        B --> C{권한 검증?}
+        C -- "실패" --> D([403 Forbidden])
+        C -- "통과" --> E[POST /api/posts]
+        E --> F["Supabase INSERT\ndeleted_at IS NULL"]
+        F --> G([revalidateTag · 완료])
+    end
+
+    subgraph DEL["삭제 — Soft Delete"]
+        H([삭제 요청]) --> I{"본인 또는 admin?"}
+        I -- "아니오" --> J([403 Forbidden])
+        I -- "예" --> K[deleted_at = NOW]
+        K --> L([revalidateTag · 완료])
+    end
+
+    classDef decision fill:#ddd6fe,stroke:#7c3aed,color:#3b0764
+    classDef error   fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
+    classDef success fill:#d1fae5,stroke:#059669,color:#064e3b
+    classDef db      fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+
+    class C,I decision
+    class D,J error
+    class G,L success
+    class E,F,K db
+```
+
+### ③ 댓글 · 좋아요
+
+```mermaid
+flowchart TD
+    subgraph COMMENT["댓글"]
+        A([댓글 작성 요청]) --> B{로그인 상태?}
+        B -- "아니오" --> C([401 Unauthorized])
+        B -- "예" --> D["Supabase INSERT\ncomments 테이블"]
+        D --> E([등록 완료])
+    end
+
+    subgraph LIKE["좋아요"]
+        F([좋아요 클릭]) --> G[UI 낙관적 업데이트]
+        G --> H[Supabase likes 토글]
+        H --> I{서버 응답?}
+        I -- "성공" --> J([반영 완료])
+        I -- "실패" --> K["UI 롤백\n이전 상태 복원"]
+    end
+
+    classDef decision fill:#ddd6fe,stroke:#7c3aed,color:#3b0764
+    classDef error   fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
+    classDef success fill:#d1fae5,stroke:#059669,color:#064e3b
+    classDef action  fill:#ede9fe,stroke:#7c3aed,color:#3b0764
+    classDef db      fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+
+    class B,I decision
+    class C,K error
+    class E,J success
+    class G action
+    class D,H db
+```
+
+### ④ 도장 찾기
+
+```mermaid
+flowchart TD
+    A([도장 찾기 진입]) --> B{위치 권한?}
+    B -- "허용" --> C["현재 좌표·반경 5km 적용"]
+    B -- "거부" --> D["전국 종목 키워드 기본 검색"]
+    C --> E["Kakao Local API\nPromise.allSettled ×6 병렬"]
+    D --> E
+    E --> F[id 기준 중복 제거]
+    F --> G{검색어 입력?}
+    G -- "없음" --> H["지도 마커·카드 목록 표시"]
+    G -- "있음" --> I["지역 + 종목 키워드 조합\nKakao 재검색"]
+    I --> H
+    H --> J([도장 찾기 완료])
+
+    classDef decision fill:#ddd6fe,stroke:#7c3aed,color:#3b0764
+    classDef action  fill:#ede9fe,stroke:#7c3aed,color:#3b0764
+    classDef api     fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+    classDef success fill:#d1fae5,stroke:#059669,color:#064e3b
+
+    class B,G decision
+    class C,D,F action
+    class E,I api
+    class H,J success
+```
+
+### ⑤ 관리자 플로우
+
+```mermaid
+flowchart TD
+    A([관리자 대시보드 진입]) --> B["createAdminClient\nservice_role · RLS 우회"]
+    B --> C{작업: 신고 처리?}
+    C -- "예" --> D[reports_status 업데이트]
+    D --> E[Resend 알림 이메일 발송]
+    E --> F([신고 처리 완료])
+    C -- "아니오" --> G{작업: 계정 관리?}
+    G -- "예" --> H{"유저 제재 vs\n도장 승인?"}
+    H -- "유저 제재" --> I["account_status\n정지 또는 삭제"]
+    H -- "도장 승인" --> J["dojang_status\npending → approved"]
+    I --> K([처리 완료])
+    J --> L([처리 완료])
+    G -- "아니오" --> M["대회 CRUD\nadmin 전용 등록·수정·삭제"]
+    M --> N([대회 처리 완료])
+
+    classDef decision fill:#ddd6fe,stroke:#7c3aed,color:#3b0764
+    classDef action  fill:#ede9fe,stroke:#7c3aed,color:#3b0764
+    classDef db      fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+    classDef success fill:#d1fae5,stroke:#059669,color:#064e3b
+
+    class C,G,H decision
+    class D,E,I,J,M action
+    class B db
+    class F,K,L,N success
+```
 
 ---
 
