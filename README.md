@@ -491,21 +491,21 @@ supabase
 
 ### 1. Soft Delete 필터 누락 — 삭제 데이터 응답 포함
 
-**문제**: API 3곳에서 `deleted_at IS NULL` 필터가 빠져 있어 삭제된 게시글, 댓글이 응답에 섞여 나왔습니다
+**문제**: API 3곳에서 `deleted_at IS NULL` 필터가 빠져 있어 삭제된 게시글, 댓글이 응답에 섞여 나왔습니다.
 
-**해결**: `api/posts`, `api/comments`, `api/comments/[id]` 조회 쿼리 전체에 `.is('deleted_at', null)` 필터를 추가했습니다. 삭제 데이터 노출 0건으로 차단됐습니다
+**해결**: `api/posts`, `api/comments`, `api/comments/[id]` 조회 쿼리 전체에 `.is('deleted_at', null)` 필터를 추가했습니다. 삭제 데이터 노출 0건으로 차단됐습니다.
 
 ### 2. admin 콘텐츠 관리 권한 오류
 
-**문제**: `user, dojang, admin` 역할 시스템에서 admin이 다른 사용자 게시글을 삭제할 때 권한 오류가 발생했습니다. 역할을 중첩 조건으로 체크하다가 admin 분기가 제대로 걸리지 않은 것이 원인이었습니다
+**문제**: `user, dojang, admin` 역할 시스템에서 admin이 다른 사용자 게시글을 삭제할 때 권한 오류가 발생했습니다. 역할을 중첩 조건으로 체크하다가 admin 분기가 제대로 걸리지 않은 것이 원인이었습니다.
 
-**해결**: `contentPermissions.ts`의 `canManageContent` 함수를 `currentUserRole === 'admin' || currentUserId === authorUserId` 단순 조건으로 정리해 admin이 모든 역할의 콘텐츠를 관리할 수 있도록 했습니다
+**해결**: `contentPermissions.ts`의 `canManageContent` 함수를 `currentUserRole === 'admin' || currentUserId === authorUserId` 단순 조건으로 정리해 admin이 모든 역할의 콘텐츠를 관리할 수 있도록 했습니다.
 
 ### 3. SSR initialData → queryKey 직렬화로 인한 불필요한 refetch
 
-**문제**: `useCommunity`, `useCompetition`에서 SSR initialData를 `JSON.stringify`로 직렬화한 값을 queryKey에 넣었습니다. 마운트마다 참조가 달라져 TanStack Query가 캐시 미스로 판단하고 API를 재요청했습니다
+**문제**: `useCommunity`, `useCompetition`에서 SSR initialData를 `JSON.stringify`로 직렬화한 값을 queryKey에 넣었습니다. 마운트마다 참조가 달라져 TanStack Query가 캐시 미스로 판단하고 API를 재요청했습니다.
 
-**해결**: queryKey를 `['posts']`, `['competition']` 고정 문자열로 바꾸고 `initialDataUpdatedAt`을 상수로 처리해 마운트 시 불필요한 refetch를 없앴습니다
+**해결**: queryKey를 `['posts']`, `['competition']` 고정 문자열로 바꾸고 `initialDataUpdatedAt`을 상수로 처리해 마운트 시 불필요한 refetch를 없앴습니다.
 
 ---
 
