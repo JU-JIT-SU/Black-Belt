@@ -188,25 +188,25 @@ flowchart TD
 
 ### A. 종목별 커뮤니티 — 게시글 CRUD · 미디어 업로드 · 무한 스크롤
 
-`/community/sport/[slug]` 경로로 종목별(유도·주짓수·레슬링·복싱·태권도·MMA) 커뮤니티가 분리됩니다. 로그인 사용자는 텍스트·이미지·동영상 게시글을 작성할 수 있고, 댓글·좋아요·북마크를 통해 상호작용합니다. 목록은 TanStack Query `useInfiniteQuery` 기반 무한 스크롤로 제공되며, 0.5초 디바운싱이 적용된 키워드 검색과 카테고리 필터를 지원합니다.
+`/community/sport/[slug]` 경로로 종목별(유도·주짓수·레슬링·복싱·태권도·MMA) 커뮤니티를 나눴습니다. 로그인한 사람은 텍스트·이미지·동영상 게시글을 쓸 수 있고, 댓글·좋아요·북마크로 반응합니다. 목록은 TanStack Query `useInfiniteQuery`로 무한 스크롤하고, 검색창은 0.5초 디바운스를 걸어 키워드 검색과 카테고리 필터를 붙였습니다.
 
-도장 계정(`role = 'dojang'`)은 `category = 'promo'` 홍보 게시글을 작성할 수 있고, 작성된 홍보글은 커뮤니티 좌측 `PromoAdSidebar`에 최대 5개까지 4초 자동 슬라이드로 노출됩니다.
+도장 계정(`role = 'dojang'`)은 `category = 'promo'` 홍보글을 쓸 수 있고, 해당 글은 커뮤니티 좌측 `PromoAdSidebar`에 최대 5개·4초 자동 슬라이드로 뜹니다.
 
 ### B. 도장 찾기 — 카카오 지도 · 종목별 키워드 병렬 검색
 
-카카오 Maps API로 지도를 렌더링하고, 카카오 Local API로 도장을 검색합니다. 페이지 진입 시 유도·주짓수·복싱·MMA·레슬링·태권도 6개 종목 키워드로 병렬 호출 후 `id` 기준 중복 제거하여 전국 무술 도장을 기본 표시합니다. 위치 권한이 있으면 반경 5km 내 결과로 자동 전환됩니다. 검색창은 실시간 디바운스 검색으로 지역명과 종목명을 조합해 쿼리합니다.
+카카오 Maps API로 지도를 그리고, 카카오 Local API로 도장을 찾습니다. 진입 시 유도·주짓수·복싱·MMA·레슬링·태권도 6개 키워드를 동시에 날려 `id` 기준으로 중복을 제거한 뒤 전국 도장을 기본으로 올립니다. 위치 권한이 있으면 반경 5km 결과로 자동 전환됩니다. 검색창은 디바운스 검색으로 지역명·종목명 조합 쿼리를 날립니다.
 
-카카오 REST API 키는 `KAKAO_REST_API_KEY` 서버 전용 환경변수에 저장하고, `NEXT_PUBLIC_` 접두사가 붙으면 브라우저 번들에 노출되기 때문에 API Route 프록시를 통해서만 호출합니다.
+`NEXT_PUBLIC_` 접두사가 붙은 환경변수는 번들에 그대로 실려 나가므로, 카카오 REST API 키는 서버 전용 환경변수로 격리하고 API Route로만 통하게 했습니다.
 
 ### C. 대회 일정 — 등록 · 상세 · 신청 링크
 
-관리자와 도장 계정은 대회를 등록·수정·삭제할 수 있습니다. 목록은 모집 상태(모집중·마감임박·모집완료)와 무한 스크롤로 제공되며, URL 쿼리 파라미터로 탭 상태가 유지됩니다. 삭제는 Soft Delete(`deleted_at` 업데이트)로 처리하고, 조회 시 항상 `deleted_at IS NULL` 필터를 적용합니다.
+대회는 admin만 등록·수정·삭제할 수 있습니다. 목록은 모집 상태(모집중·마감임박·모집완료) 탭과 무한 스크롤로 보여주고, 탭 상태는 URL 쿼리 파라미터로 유지합니다. 삭제는 Soft Delete(`deleted_at` 업데이트)로 처리하고, 조회할 때는 항상 `deleted_at IS NULL` 필터를 겁니다.
 
 ### D. 관리자 시스템 — 유저 제재 · 도장 승인 · 신고 처리
 
-관리자 전용 상단 네비게이션(`AdminTopNav`) 아래 게시글 관리·유저 관리·대회 관리·고객지원·대시보드 5개 섹션이 있습니다. 유저 정지·계정 삭제는 `service_role` 키를 사용하는 `createAdminClient()`를 통해 RLS를 우회하여 처리합니다. 도장 등록 승인은 `dojang_status`를 `pending → approved`로 변경하고, 신고 접수 시 관리자 이메일로 알림이 자동 발송됩니다.
+`AdminTopNav` 아래 게시글 관리·유저 관리·대회 관리·고객지원·대시보드 5개 섹션이 있습니다. 유저 정지·계정 삭제는 `service_role` 키를 쓰는 `createAdminClient()`로 RLS를 우회해 처리합니다. 도장 승인은 `dojang_status`를 `pending → approved`로 바꾸고, 신고가 접수되면 Resend로 관리자 이메일 알림을 보냅니다.
 
-관리자 테이블은 URL 쿼리 파라미터 기반 상태 관리와 Supabase `.range()`를 활용한 서버 페이지네이션으로 동작합니다.
+관리자 테이블은 URL 쿼리 파라미터로 상태를 관리하고 Supabase `.range()`로 서버 페이지네이션합니다.
 
 ---
 
@@ -272,39 +272,15 @@ flowchart TD
 
 ## 데이터베이스 설계 (ERD)
 
-```
-profiles      id · nickname · avatar_url · bio · belt_level(운동종목slug) · role(user|dojang|admin)
-              name · email_value · phone_value · account_status
-              도장 전용: business_number · representative · contact · address · business_file_url
-
-posts         id · user_id → profiles · title · content
-              category(notice|promo|personal) · sport(judo|bjj|wrestling|boxing|taekwondo|mma|NULL)
-              image_url · video_url · view_count · report_count · status · deleted_at · created_at
-
-comments      id · post_id → posts · user_id → profiles · content · deleted_at · created_at
-
-likes         id · post_id → posts · user_id → profiles · created_at
-
-bookmarks     id · post_id → posts · user_id → profiles · created_at
-              복합 유니크: (user_id, post_id)
-
-reports       id · reporter_id → profiles · post_id → posts
-              reason · reports_status · handled_at · action_type · created_at
-
-competition   id · user_id → profiles · name · location · event_data · apply_deadline
-              apply_url · description · image_url · participants · deleted_at · created_at
-
-dojang        id · profile_id → profiles · business_number · representative
-              phone_value · addr · business_file_url · dojang_status · created_at
-```
+![ERD](public/docs/erd.png)
 
 **설계 의도**
 
-`posts.sport` 컬럼에 종목 슬러그(NULL 허용)를 두어 공지(`notice`)와 종목별 게시글을 단일 테이블에서 관리합니다. 종목 커뮤니티 조회 시 `sport = 'slug'` 필터로 분리하고, 공지는 `sport IS NULL`로 조회합니다.
+`posts.sport` 컬럼에 종목 슬러그(NULL 허용)를 두고 공지(`notice`)와 종목별 게시글을 한 테이블로 관리합니다. 종목 커뮤니티 조회 시 `sport = 'slug'`로 걸러내고, 공지는 `sport IS NULL`로 따로 뽑습니다.
 
-`profiles.belt_level` 컬럼은 DB 마이그레이션 없이 운동 종목 슬러그를 저장하도록 재활용 중입니다. 별도 `sport` 컬럼으로 분리가 필요한 개선 항목입니다.
+`profiles.belt_level` 컬럼은 원래 띠 단계용이었는데, DB 마이그레이션 없이 운동 종목 슬러그를 임시로 넣어두고 있습니다. 명시적인 `sport` 컬럼으로 분리하는 게 맞고, 개선 항목에 올려뒀습니다.
 
-게시글·댓글·대회 삭제는 모두 Soft Delete(`deleted_at` 업데이트)로 처리합니다. 모든 조회 쿼리에 `deleted_at IS NULL` 필터가 반드시 포함되어야 하며, 누락 시 삭제 데이터가 클라이언트에 노출됩니다.
+게시글·댓글·대회는 row를 실제로 지우지 않고 `deleted_at`만 업데이트합니다. 조회 쿼리 어디서든 `deleted_at IS NULL` 필터가 빠지면 삭제된 데이터가 그대로 내려갑니다.
 
 ---
 
@@ -384,7 +360,7 @@ Supabase RLS 정책으로 DB 레벨에서 역할별 접근을 통제합니다.
 | 홍보 게시글 작성    |  ❌  |   ✅   |  ✅   |
 | 공지 작성           |  ❌  |   ❌   |  ✅   |
 | 타인 게시글 삭제    |  ❌  |   ❌   |  ✅   |
-| 대회 등록·수정      |  ❌  |   ✅   |  ✅   |
+| 대회 등록·수정      |  ❌  |   ❌   |  ✅   |
 | 관리자 페이지       |  ❌  |   ❌   |  ✅   |
 | 유저 제재·도장 승인 |  ❌  |   ❌   |  ✅   |
 
@@ -410,11 +386,11 @@ function normalize(text: string): string {
 
 ### 서버 컴포넌트 캐싱
 
-공개 데이터(커뮤니티 목록·대회·도장찾기)는 `supabasePublic` + `"use cache"`로 정적 캐싱합니다. 글 작성·수정·삭제 시 `revalidateTag`로 핀포인트 무효화하고, 인증이 필요한 데이터는 `createSupabaseServerClient(cookies)`로 캐싱 없이 매 요청 조회합니다.
+커뮤니티 목록·대회·도장찾기 같은 공개 데이터는 `supabasePublic` + `use cache`로 올려두고, 글을 쓰거나 수정·삭제할 때만 `revalidateTag`로 해당 태그를 날립니다. 마이페이지·글 작성처럼 인증이 필요한 데이터는 캐시 없이 매 요청마다 새로 가져옵니다.
 
 ### next/image 최적화
 
-`<img>` 태그를 직접 사용한 9개 위치를 `next/image`(fill·priority·sizes)로 교체해 lazy loading·WebP 변환·디바이스별 리사이징을 활성화했습니다. `/community` 페이지 Lighthouse Performance 65점 → 74점으로 개선됐습니다.
+9곳에서 `<img>`를 직접 쓰고 있어 lazy loading·WebP 변환·사이즈 최적화가 빠져 있었습니다. `next/image`로 바꾸고 `fill`·`priority`·`sizes`를 각 위치에 맞게 지정했더니 `/community` Lighthouse Performance가 65점 → 74점으로 올랐습니다.
 
 ### 낙관적 업데이트
 
@@ -547,15 +523,15 @@ const onSubmit = async (data: DojangFormType) => {
 
 ### 접근성 위반 33건 → 0건
 
-axe-core 전수 진단 결과 ARIA 패턴 critical 4건, 중복 landmark serious 4건, WCAG AA 색상 대비 미달 serious 25건이 확인됐습니다. `role="tablist"` 교정, landmark 구조 재설계, 색상 토큰 WCAG AA 기준 재조정으로 위반 33건을 0건으로 해소했습니다. Lighthouse Accessibility 100점을 달성했습니다.
+axe-core로 전수 점검했더니 ARIA 패턴 critical 4건, 중복 landmark serious 4건, WCAG AA 색상 대비 미달 serious 25건이 나왔습니다. `role="tablist"` 수정, landmark 구조 재설계, 색상 토큰 재조정으로 33건 전부 잡았고 Lighthouse Accessibility 100점을 찍었습니다.
 
 ### `<img>` → `next/image` 교체
 
-`<img>` 태그를 직접 사용한 9개 위치에서 lazy loading·WebP 변환·사이즈 최적화가 미적용 상태였습니다. `next/image`로 전환하고 `fill`·`priority`·`sizes` 속성을 각 사용처에 맞게 지정해 `/community` Lighthouse Performance 65점 → 74점으로 개선했습니다.
+9곳에서 `<img>`를 직접 쓰고 있어 lazy loading·WebP 변환·사이즈 최적화가 빠져 있었습니다. `next/image`로 바꾸고 `fill`·`priority`·`sizes`를 각 위치에 맞게 지정했더니 `/community` Lighthouse Performance가 65점 → 74점으로 올랐습니다.
 
 ### 컴포넌트 중복 코드 추출·통합
 
-작성·수정·목록 컴포넌트 간 중복 로직이 6개 파일에 분산되어 1,054줄의 유지보수 부채가 누적됐습니다. `PostFormBase`·`CompetitionFormBase` 공통 컴포넌트와 `useCommunityListState` 훅으로 추출·통합해 6개 파일 합계를 1,054줄 → 532줄(-522줄, -49.5%)로 감소시켰습니다.
+작성·수정·목록 컴포넌트 6개에 같은 로직이 복붙되어 있었고 합치면 1,054줄이었습니다. `PostFormBase`·`CompetitionFormBase` 공통 컴포넌트와 `useCommunityListState` 훅으로 뽑아낸 뒤 6개 파일 합계가 1,054줄 → 532줄(-49.5%)로 줄었습니다.
 
 ---
 
@@ -563,60 +539,100 @@ axe-core 전수 진단 결과 ARIA 패턴 critical 4건, 중복 landmark serious
 
 ```
 src/
+├── actions/                       # Server Actions
+│   ├── admin/                     # 관리자 액션 (posts, users, dojang, reports, competitions)
+│   └── competition/
+│
 ├── app/
-│   ├── (admin)/          # 관리자 전용 (대시보드·게시글·유저·대회·고객지원)
-│   ├── (auth)/           # 인증 (로그인·회원가입·비밀번호찾기)
-│   ├── (main)/           # 메인 서비스
-│   │   ├── community/    # 커뮤니티 목록·상세·작성·수정
-│   │   │   └── sport/[slug]/  # 종목별 커뮤니티
-│   │   ├── competitions/ # 대회 목록·상세·등록·수정
-│   │   ├── dojangs/      # 도장 찾기 (Kakao Maps)
-│   │   └── mypage/       # 마이페이지
-│   └── api/              # Route Handlers
-│       ├── posts/        # 게시글 CRUD + revalidateTag
-│       ├── comments/     # 댓글 CRUD + 어뷰징 방지
-│       ├── reports/      # 신고 접수
-│       └── register/     # 회원가입 (일반·도장)
+│   ├── (admin)/admin/             # 관리자 전용
+│   │   ├── competitions/
+│   │   ├── posts/
+│   │   ├── support/
+│   │   └── users/
+│   ├── (auth)/                    # 인증
+│   │   ├── find-password/
+│   │   ├── login/
+│   │   └── register/
+│   ├── (main)/                    # 메인 서비스
+│   │   ├── community/
+│   │   │   ├── [slug]/            # 게시글 상세·수정
+│   │   │   │   └── edit/
+│   │   │   ├── sport/[sport]/     # 종목별 커뮤니티·작성
+│   │   │   │   └── write/
+│   │   │   └── write/            # 공지 작성
+│   │   ├── competitions/
+│   │   │   ├── [slug]/
+│   │   │   │   └── edit/
+│   │   │   └── write/
+│   │   ├── dashboard/
+│   │   ├── dojangs/               # 도장 찾기 (Kakao Maps)
+│   │   └── mypage/
+│   ├── api/                       # Route Handlers
+│   │   ├── check-nickname/
+│   │   ├── comments/[id]/
+│   │   ├── delete-account/
+│   │   ├── posts/[id]/
+│   │   ├── register/              # 일반 회원가입
+│   │   ├── register-dojang/
+│   │   ├── reports/
+│   │   └── reset-password/
+│   └── home/
 │
 ├── components/
-│   ├── admin/            # AdminTopNav, 관리자 테이블·액션
-│   ├── common/           # ConfirmModal, SearchInput, Field
-│   ├── community/        # PostCard, PostFormBase, PromoAdSidebar, SportCommunityClient
-│   ├── competition/      # CompetitionCard, CompetitionFormBase
-│   ├── dojang/           # DojangClient (Kakao Maps 연동)
-│   ├── layout/           # TopNav, ScrollToTop
-│   └── ui/               # shadcn/ui 기반 공용 컴포넌트
+│   ├── admin/                     # AdminTopNav, 관리자 테이블·액션
+│   │   ├── competitions/
+│   │   ├── dashboard/
+│   │   ├── posts/
+│   │   ├── support/
+│   │   └── users/
+│   ├── common/                    # ConfirmModal, SearchInput, Field 등
+│   ├── community/                 # PostCard, PostFormBase, PromoAdSidebar
+│   ├── competition/               # CompetitionCard, CompetitionFormBase
+│   ├── dashboard/
+│   ├── dojang/                    # DojangClient (Kakao Maps)
+│   ├── error/
+│   ├── home/
+│   ├── layout/                    # TopNav, Sidebar, Footer
+│   ├── mypage/
+│   └── ui/                        # shadcn/ui 기반
 │
 ├── hooks/
-│   ├── useCommunity.ts          # 커뮤니티 TanStack Query
-│   ├── useCompetition.ts        # 대회 TanStack Query
-│   ├── useCommunityListState.ts # 목록 상태 관리 공통 훅
-│   ├── useInfiniteScroll.ts     # IntersectionObserver 무한 스크롤
-│   ├── useDebounce.ts           # 0.5초 검색 디바운스
-│   └── useLike.ts               # 낙관적 업데이트
+│   ├── useAuth.ts
+│   ├── useBookmark.ts
+│   ├── useCommunity.ts            # TanStack Query 래핑
+│   ├── useCommunityListState.ts   # 목록 필터·검색 상태 공통 훅
+│   ├── useCompetition.ts
+│   ├── useDebounce.ts             # 0.5초 검색 디바운스
+│   ├── useInfiniteScroll.ts       # IntersectionObserver
+│   ├── useLike.ts                 # 낙관적 업데이트
+│   └── useMyPage.ts
+│
+├── lib/
+│   ├── supabase/
+│   │   ├── client.ts              # 브라우저용
+│   │   ├── server.ts              # 서버 컴포넌트용 (cookies)
+│   │   └── public.ts              # 공개 데이터용 (use cache 호환)
+│   ├── CommentAbuseGuard.ts       # 댓글 어뷰징 방지
+│   ├── contentPermissions.ts      # 역할별 콘텐츠 권한
+│   ├── auth.ts
+│   └── reportNotificationEmail.ts
 │
 ├── services/
-│   ├── communityService.ts          # 클라이언트 사이드 CRUD
-│   ├── communityService.server.ts   # 서버 사이드 (use cache)
+│   ├── communityService.ts        # 클라이언트용 CRUD
+│   ├── communityService.server.ts # 서버용 (use cache)
 │   ├── competitionService.ts
 │   ├── competitionService.server.ts
 │   ├── authService.ts
-│   ├── userService.ts
-│   └── bookmarkService.ts
-│
-├── lib/
-│   └── supabase/
-│       ├── client.ts   # 브라우저용
-│       ├── server.ts   # 서버 컴포넌트용 (cookies)
-│       └── public.ts   # 공개 데이터용 (use cache 가능)
+│   ├── bookmarkService.ts
+│   ├── reportService.ts
+│   └── userService.ts
 │
 ├── store/
-│   └── authStore.ts    # Zustand 인증 상태
+│   └── authStore.ts               # Zustand 인증 상태
 │
-├── constants/
-│   └── sports.ts       # SPORTS 상수 (slug·name·icon·color)
-│
-└── types/              # TypeScript 타입 정의
+├── constants/                     # sports, routes, adminMeta, categoryMap 등
+├── types/                         # TypeScript 타입 정의
+└── utils/                         # formatDate, timeAgo, share
 ```
 
 ---
