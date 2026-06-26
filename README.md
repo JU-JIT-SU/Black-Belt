@@ -200,7 +200,7 @@ flowchart TD
 
 ## 주요 기능 시연
 
-### A. 종목별 커뮤니티 — 게시글 CRUD 미디어 업로드 무한 스크롤
+### A. 종목별 커뮤니티 — 게시글 CRUD , 미디어 업로드 , 무한 스크롤
 
 ![커뮤니티](public/docs/screenshot-community.png)
 
