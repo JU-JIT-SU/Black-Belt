@@ -319,7 +319,7 @@ export default function DashboardClient({ profile, stats, competitions, notices 
               </Link>
             </div>
             <div style={{ padding: '6px 0' }}>
-              {SPORTS.map(({ slug, name, image, color }) => (
+              {SPORTS.map(({ slug, name, icon, iconSize, color }) => (
                 <Link
                   key={slug}
                   href={`/community/sport/${slug}`}
@@ -343,7 +343,7 @@ export default function DashboardClient({ profile, stats, competitions, notices 
                     background: color + '1a', border: `1.5px solid ${color}44`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                   }}>
-                    <Image src={image} alt={name} width={15} height={15} style={{ objectFit: 'contain' }} />
+                    <span style={{ fontSize: iconSize, lineHeight: 1 }}>{icon}</span>
                   </div>
                   <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-text-high)' }}>{name}</span>
                   <span style={{ marginLeft: 'auto', fontSize: '11px', color: 'var(--color-text-disabled)' }}>→</span>

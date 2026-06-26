@@ -117,16 +117,40 @@ export default function DojangClient() {
     [clearMarkers, buildInfoWindowHTML],
   );
 
+  const SPORT_KEYWORDS = ['유도', '주짓수', '복싱', 'MMA', '레슬링', '태권도'];
+
+  const fetchKakaoKeywords = useCallback(
+    async (keywords: string[], extraParams = '') => {
+      const headers = { Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_KAKAO_LOCAL_API_KEY}` };
+      const results = await Promise.allSettled(
+        keywords.map((kw) =>
+          fetch(
+            `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(kw)}${extraParams}&size=15`,
+            { headers },
+          ).then((r) => r.json()),
+        ),
+      );
+      const seen = new Set<string>();
+      return results.flatMap((r) => {
+        if (r.status !== 'fulfilled') return [];
+        return (r.value.documents ?? []) as KakaoPlace[];
+      }).filter((doc) => {
+        if (seen.has(doc.id)) return false;
+        seen.add(doc.id);
+        return true;
+      });
+    },
+    [],
+  );
+
   const fetchByLocation = useCallback(
     async (lat: number, lng: number) => {
       setIsLoading(true);
       try {
-        const res = await fetch(
-          `https://dapi.kakao.com/v2/local/search/keyword.json?query=무술 체육관&x=${lng}&y=${lat}&radius=5000&size=15`,
-          { headers: { Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_KAKAO_LOCAL_API_KEY}` } },
+        const docs = await fetchKakaoKeywords(
+          SPORT_KEYWORDS,
+          `&x=${lng}&y=${lat}&radius=5000`,
         );
-        const data = await res.json();
-        const docs: KakaoPlace[] = data.documents ?? [];
         setDojangs(docs);
         setSelectedId(null);
         setShowDetail(false);
@@ -138,18 +162,13 @@ export default function DojangClient() {
         setIsLocating(false);
       }
     },
-    [displayMarkers],
+    [fetchKakaoKeywords, displayMarkers],
   );
 
   const fetchDefaultDojangs = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await fetch(
-        `https://dapi.kakao.com/v2/local/search/keyword.json?query=무술 체육관&size=15`,
-        { headers: { Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_KAKAO_LOCAL_API_KEY}` } },
-      );
-      const data = await res.json();
-      const docs: KakaoPlace[] = data.documents ?? [];
+      const docs = await fetchKakaoKeywords(SPORT_KEYWORDS);
       setDojangs(docs);
       setSelectedId(null);
       setShowDetail(false);
@@ -159,7 +178,7 @@ export default function DojangClient() {
     } finally {
       setIsLoading(false);
     }
-  }, [displayMarkers]);
+  }, [fetchKakaoKeywords, displayMarkers]);
 
   const initMap = useCallback(() => {
     if (!mapRef.current || !window.naver) return;
@@ -210,12 +229,8 @@ export default function DojangClient() {
     if (!debouncedSearch.trim()) return;
     setIsLoading(true);
     try {
-      const res = await fetch(
-        `https://dapi.kakao.com/v2/local/search/keyword.json?query=${debouncedSearch}&size=15`,
-        { headers: { Authorization: `KakaoAK ${process.env.NEXT_PUBLIC_KAKAO_LOCAL_API_KEY}` } },
-      );
-      const data = await res.json();
-      const docs: KakaoPlace[] = data.documents ?? [];
+      const keywords = SPORT_KEYWORDS.map((kw) => `${debouncedSearch} ${kw}`);
+      const docs = await fetchKakaoKeywords(keywords);
       setDojangs(docs);
       setSelectedId(null);
       setShowDetail(false);
@@ -225,7 +240,7 @@ export default function DojangClient() {
     } finally {
       setIsLoading(false);
     }
-  }, [debouncedSearch, displayMarkers]);
+  }, [debouncedSearch, fetchKakaoKeywords, displayMarkers]);
 
   // 실시간 검색 — debouncedSearch 변경 시 자동 실행
   useEffect(() => {
