@@ -2,7 +2,7 @@
 
 > 유도, 주짓수, 레슬링, 복싱, 태권도, MMA — 모든 무술 종목 수련자, 도장, 코치를 하나의 공간에서 연결하는 스포츠 커뮤니티 플랫폼
 
-배포 링크: https://final-project-team3.vercel.app/
+배포 링크: https://activio-red.vercel.app/
 
 ---
 
@@ -22,7 +22,7 @@
 
 | 항목      | 내용                                    |
 | --------- | --------------------------------------- |
-| 배포 URL  | https://final-project-team3.vercel.app/ |
+| 배포 URL  | https://activio-red.vercel.app/ |
 | 개발 기간 | 2026.04 ~ 진행 중                       |
 | 개발 인원 | 4인 (풀스택)                            |
 
@@ -188,11 +188,15 @@ flowchart TD
 
 ### A. 종목별 커뮤니티 — 게시글 CRUD · 미디어 업로드 · 무한 스크롤
 
+![커뮤니티](public/docs/screenshot-community.png)
+
 `/community/sport/[slug]` 경로로 종목별(유도·주짓수·레슬링·복싱·태권도·MMA) 커뮤니티를 나눴습니다. 로그인한 사람은 텍스트·이미지·동영상 게시글을 쓸 수 있고, 댓글·좋아요·북마크로 반응합니다. 목록은 TanStack Query `useInfiniteQuery`로 무한 스크롤하고, 검색창은 0.5초 디바운스를 걸어 키워드 검색과 카테고리 필터를 붙였습니다.
 
 도장 계정(`role = 'dojang'`)은 `category = 'promo'` 홍보글을 쓸 수 있고, 해당 글은 커뮤니티 좌측 `PromoAdSidebar`에 최대 5개·4초 자동 슬라이드로 뜹니다.
 
 ### B. 도장 찾기 — 카카오 지도 · 종목별 키워드 병렬 검색
+
+![도장찾기](public/docs/screenshot-dojang.png)
 
 카카오 Maps API로 지도를 그리고, 카카오 Local API로 도장을 찾습니다. 진입 시 유도·주짓수·복싱·MMA·레슬링·태권도 6개 키워드를 동시에 날려 `id` 기준으로 중복을 제거한 뒤 전국 도장을 기본으로 올립니다. 위치 권한이 있으면 반경 5km 결과로 자동 전환됩니다. 검색창은 디바운스 검색으로 지역명·종목명 조합 쿼리를 날립니다.
 
@@ -200,9 +204,13 @@ flowchart TD
 
 ### C. 대회 일정 — 등록 · 상세 · 신청 링크
 
+![대회일정](public/docs/screenshot-competition.png)
+
 대회는 admin만 등록·수정·삭제할 수 있습니다. 목록은 모집 상태(모집중·마감임박·모집완료) 탭과 무한 스크롤로 보여주고, 탭 상태는 URL 쿼리 파라미터로 유지합니다. 삭제는 Soft Delete(`deleted_at` 업데이트)로 처리하고, 조회할 때는 항상 `deleted_at IS NULL` 필터를 겁니다.
 
 ### D. 관리자 시스템 — 유저 제재 · 도장 승인 · 신고 처리
+
+![관리자](public/docs/screenshot-admin.png)
 
 `AdminTopNav` 아래 게시글 관리·유저 관리·대회 관리·고객지원·대시보드 5개 섹션이 있습니다. 유저 정지·계정 삭제는 `service_role` 키를 쓰는 `createAdminClient()`로 RLS를 우회해 처리합니다. 도장 승인은 `dojang_status`를 `pending → approved`로 바꾸고, 신고가 접수되면 Resend로 관리자 이메일 알림을 보냅니다.
 
@@ -382,13 +390,13 @@ function normalize(text: string): string {
 
 ---
 
-## 성능 최적화
+## 성능 최적화 · 코드 품질
 
 ### 서버 컴포넌트 캐싱
 
 커뮤니티 목록·대회·도장찾기 같은 공개 데이터는 `supabasePublic` + `use cache`로 올려두고, 글을 쓰거나 수정·삭제할 때만 `revalidateTag`로 해당 태그를 날립니다. 마이페이지·글 작성처럼 인증이 필요한 데이터는 캐시 없이 매 요청마다 새로 가져옵니다.
 
-### next/image 최적화
+### `<img>` → `next/image` 교체
 
 9곳에서 `<img>`를 직접 쓰고 있어 lazy loading·WebP 변환·사이즈 최적화가 빠져 있었습니다. `next/image`로 바꾸고 `fill`·`priority`·`sizes`를 각 위치에 맞게 지정했더니 `/community` Lighthouse Performance가 65점 → 74점으로 올랐습니다.
 
@@ -451,7 +459,7 @@ supabase
 
 **문제**: `use cache` 스코프 안에서 `cookies()`를 호출하는 `createSupabaseServerClient` 사용 시 빌드 오류 발생
 
-**해결**: Supabase 클라이언트를 목적에 따라 3가지로 분리. 공개 데이터용 `supabase/public.ts`는 `cookies()` 없이 동작해 `use cache` 스코프에서 자유롭게 사용 가능. 서비스 파일도 `communityService.ts`(클라이언트용)와 `communityService.server.ts`(서버용) 두 벌로 분리
+**해결**: Supabase 클라이언트를 목적별로 3가지로 나눴습니다. 공개 데이터용 `supabase/public.ts`는 `cookies()` 없이 동작해 `use cache` 스코프에서 쓸 수 있고, 서비스 파일도 `communityService.ts`(클라이언트용)와 `communityService.server.ts`(서버용) 두 벌로 분리했습니다
 
 ### 2. 조회수 트리거 이슈 + Hydration 오류
 
@@ -481,7 +489,7 @@ const nextConfig: NextConfig = {
 
 **문제**: 클라이언트에서 Supabase 직접 호출 구조라 쿨타임 체크가 `Promise.all` 동시 요청 시 무력화됨
 
-**해결**: `/api/comments` Route Handler로 이전해 서버에서 쿨타임·중복·연속 작성 검사. DB 트리거로 INSERT 자체를 막아 Race Condition 완전 차단. invisible 문자·공백·대소문자 정규화로 우회 차단
+**해결**: `/api/comments` Route Handler로 옮겨 서버에서 쿨타임·중복·연속 작성을 검사하고, DB 트리거로 INSERT 자체를 막아 Race Condition을 끊었습니다. invisible 문자·공백·대소문자 정규화로 우회도 차단했습니다
 
 ### 5. 관리자 테이블 서버 페이지네이션 전환
 
@@ -497,6 +505,24 @@ if (status !== 'all') query = query.eq('role', status);
 if (search) query = query.ilike('nickname', `%${search}%`);
 const { data } = await query.range(from, to);
 ```
+
+### 7. Soft Delete 필터 누락 — 삭제 데이터 응답 포함
+
+**문제**: API 3곳에서 `deleted_at IS NULL` 필터가 빠져 있어 삭제된 게시글·댓글이 응답에 섞여 나왔습니다
+
+**해결**: `api/posts`, `api/comments`, `api/comments/[id]` 조회 쿼리 전체에 `.is('deleted_at', null)` 필터를 추가했습니다. 삭제 데이터 노출 0건으로 차단됐습니다
+
+### 8. admin 콘텐츠 관리 권한 오류
+
+**문제**: `user·dojang·admin` 역할 시스템에서 admin이 다른 사용자 게시글을 삭제할 때 권한 오류가 발생했습니다. 역할을 중첩 조건으로 체크하다가 admin 분기가 제대로 걸리지 않은 것이 원인이었습니다
+
+**해결**: `contentPermissions.ts`의 `canManageContent` 함수를 `currentUserRole === 'admin' || currentUserId === authorUserId` 단순 조건으로 정리해 admin이 모든 역할의 콘텐츠를 관리할 수 있도록 했습니다
+
+### 9. SSR initialData → queryKey 직렬화로 인한 불필요한 refetch
+
+**문제**: `useCommunity`·`useCompetition`에서 SSR initialData를 `JSON.stringify`로 직렬화한 값을 queryKey에 넣었습니다. 마운트마다 참조가 달라져 TanStack Query가 캐시 미스로 판단하고 API를 재요청했습니다
+
+**해결**: queryKey를 `['posts']`·`['competition']` 고정 문자열로 바꾸고 `initialDataUpdatedAt`을 상수로 처리해 마운트 시 불필요한 refetch를 없앴습니다
 
 ### 6. 도장 회원가입 파일 업로드 순서 문제
 
@@ -519,15 +545,9 @@ const onSubmit = async (data: DojangFormType) => {
 
 ---
 
-## 코드 품질 개선
-
 ### 접근성 위반 33건 → 0건
 
 axe-core로 전수 점검했더니 ARIA 패턴 critical 4건, 중복 landmark serious 4건, WCAG AA 색상 대비 미달 serious 25건이 나왔습니다. `role="tablist"` 수정, landmark 구조 재설계, 색상 토큰 재조정으로 33건 전부 잡았고 Lighthouse Accessibility 100점을 찍었습니다.
-
-### `<img>` → `next/image` 교체
-
-9곳에서 `<img>`를 직접 쓰고 있어 lazy loading·WebP 변환·사이즈 최적화가 빠져 있었습니다. `next/image`로 바꾸고 `fill`·`priority`·`sizes`를 각 위치에 맞게 지정했더니 `/community` Lighthouse Performance가 65점 → 74점으로 올랐습니다.
 
 ### 컴포넌트 중복 코드 추출·통합
 
@@ -674,14 +694,12 @@ npm run build
 
 ---
 
-## 개선 사항
+## v3 업데이트 예정
 
 | 기능                                       | 설명                                                                                            |
 | ------------------------------------------ | ----------------------------------------------------------------------------------------------- |
-| `profiles.belt_level` 컬럼 마이그레이션    | 운동 종목을 저장하기 위해 `belt_level` 컬럼을 재활용 중. 명시적인 `sport` 컬럼으로 분리 필요    |
-| 게시글 미리보기                            | 작성 폼에서 실제 렌더링 결과를 미리 확인하는 기능                                               |
+| `profiles.belt_level` 컬럼 마이그레이션    | 운동 종목을 저장하기 위해 `belt_level` 컬럼을 재활용 중 — 명시적인 `sport` 컬럼으로 분리 필요  |
 | 인기글 정렬                                | 좋아요·조회수 기반 인기글 탭 추가                                                               |
-| 실시간 댓글                                | Supabase Realtime을 활용한 새 댓글 실시간 반영                                                  |
 | 소셜 로그인                                | Google·Kakao OAuth 연동                                                                         |
 | 도장 리뷰 시스템                           | 수련생이 도장에 평점과 후기를 남기는 기능                                                       |
 | `getCompetitions()` 클라이언트 서비스 구현 | 현재 서버 사이드(`lib/getCompetitions.ts`)로만 처리 중인 목록 조회를 클라이언트 서비스로도 구현 |
