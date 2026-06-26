@@ -36,7 +36,7 @@ const tabActiveStyle = {
   boxShadow: '0 2px 8px rgba(37,99,235,0.3)',
 } as const;
 
-const tabInactiveStyle = { color: 'rgba(255,255,255,0.4)' } as const;
+const tabInactiveStyle = { color: 'var(--color-text-hint)' } as const;
 
 export default function CompetitionFormBase({
   pageTitle,
@@ -69,7 +69,7 @@ export default function CompetitionFormBase({
         <div
           role="tablist"
           className="flex rounded-xl p-1 mb-6"
-          style={{ background: 'rgba(255,255,255,0.05)' }}
+          style={{ background: 'var(--color-bg-tint)' }}
         >
           <button
             type="button"
@@ -100,7 +100,7 @@ export default function CompetitionFormBase({
         showEmptyPreview ? (
           <div
             className="flex flex-col items-center justify-center py-16 mb-6"
-            style={{ color: 'rgba(255,255,255,0.38)' }}
+            style={{ color: 'var(--color-text-disabled)' }}
           >
             <p className="text-sm">작성 탭에서 내용을 입력하면</p>
             <p className="text-sm">여기서 미리볼 수 있어요.</p>

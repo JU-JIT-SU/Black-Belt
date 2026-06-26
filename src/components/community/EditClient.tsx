@@ -83,8 +83,8 @@ export default function EditClient({ id, initialPost }: Props) {
   const categorySection = (
     <div
       aria-label={`게시글 유형: ${category === 'promo' ? '도장 홍보' : category === 'notice' ? '공지' : '일반 게시글'}`}
-      className="py-2 px-3 rounded-lg text-sm font-medium text-white text-center"
-      style={{ background: 'rgba(255,255,255,0.1)' }}
+      className="py-2 px-3 rounded-lg text-sm font-medium text-center"
+      style={{ background: 'var(--color-bg-tint)', color: 'var(--color-text-primary)' }}
     >
       {category === 'promo'
         ? '도장 홍보'

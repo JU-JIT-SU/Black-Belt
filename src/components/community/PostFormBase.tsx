@@ -181,7 +181,7 @@ export default function PostFormBase({
         !title && !content ? (
           <div
             className="flex flex-col items-center justify-center py-16 mb-6"
-            style={{ color: 'var(--color-text-disabled)' }}
+            style={{ color: 'var(--color-text-secondary)' }}
           >
             <p className="text-sm">작성 탭에서 내용을 입력하면</p>
             <p className="text-sm">여기서 미리볼 수 있어요.</p>
