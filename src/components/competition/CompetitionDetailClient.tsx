@@ -71,8 +71,8 @@ export default function CompetitionDetailClient({
       <Link
         href="/competitions"
         aria-label="대회일정 목록으로 돌아가기"
-        className="flex items-center gap-2 px-2.5 py-2 text-sm font-medium rounded-xl transition-colors duration-200 cursor-pointer"
-        style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.85)' }}
+        className="w-fit flex items-center gap-2 px-2.5 py-2 text-sm font-medium rounded-xl transition-colors duration-200 cursor-pointer"
+        style={{ background: 'var(--color-border-medium)', border: '1px solid var(--color-border-strong)', color: 'var(--color-text-high)' }}
       >
         <svg
           width="16"
@@ -120,7 +120,7 @@ export default function CompetitionDetailClient({
                 >
                   <Pencil
                     size={20}
-                    className="text-white/40 hover:text-white/80 transition-colors"
+                    className="text-white/40 hover:text-white/80 transition-colors light:text-black/40 light:hover:text-[#0f1117]"
                   />
                 </button>
                 <button
@@ -132,7 +132,7 @@ export default function CompetitionDetailClient({
                 >
                   <Trash2
                     size={20}
-                    className="text-white/40 hover:text-red-400 transition-colors"
+                    className="text-white/40 hover:text-red-400 transition-colors light:text-black/40"
                   />
                 </button>
               </>
@@ -144,7 +144,7 @@ export default function CompetitionDetailClient({
               onClick={() => handleShare()}
               className="p-1 cursor-pointer"
             >
-              <Share2 size={18} className="text-white/40 hover:text-white/80 transition-colors" />
+              <Share2 size={18} className="text-white/40 hover:text-white/80 transition-colors light:text-black/40 light:hover:text-[#0f1117]" />
             </button>
           </>
         }

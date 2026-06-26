@@ -133,7 +133,7 @@ export default function DashboardClient({ profile, stats, competitions, notices 
                 {/* Image area */}
                 <div style={{ position: 'relative', height: '220px', background: 'var(--color-bg-surface-alt)', overflow: 'hidden' }}>
                   {featured.image_url ? (
-                    <Image src={featured.image_url} alt={featured.title} fill className="object-cover" style={{ opacity: 0.75 }} />
+                    <Image src={featured.image_url} alt={featured.title} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" style={{ opacity: 0.75 }} />
                   ) : (
                     <div
                       style={{
@@ -319,7 +319,7 @@ export default function DashboardClient({ profile, stats, competitions, notices 
               </Link>
             </div>
             <div style={{ padding: '6px 0' }}>
-              {SPORTS.map(({ slug, name, image, color }) => (
+              {SPORTS.map(({ slug, name, icon, iconSize, color }) => (
                 <Link
                   key={slug}
                   href={`/community/sport/${slug}`}
@@ -343,7 +343,7 @@ export default function DashboardClient({ profile, stats, competitions, notices 
                     background: color + '1a', border: `1.5px solid ${color}44`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                   }}>
-                    <Image src={image} alt={name} width={15} height={15} style={{ objectFit: 'contain' }} />
+                    <span style={{ fontSize: iconSize, lineHeight: 1 }}>{icon}</span>
                   </div>
                   <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-text-high)' }}>{name}</span>
                   <span style={{ marginLeft: 'auto', fontSize: '11px', color: 'var(--color-text-disabled)' }}>→</span>
@@ -409,7 +409,7 @@ export default function DashboardClient({ profile, stats, competitions, notices 
                     }}
                   >
                     {profile!.avatar_url ? (
-                      <Image src={profile!.avatar_url} alt={profile!.nickname} fill className="object-cover" />
+                      <Image src={profile!.avatar_url} alt={profile!.nickname} fill sizes="44px" className="object-cover" />
                     ) : (
                       <span style={{ fontSize: '18px', fontWeight: 800, color: '#60a5fa' }}>
                         {profile!.nickname[0]?.toUpperCase()}

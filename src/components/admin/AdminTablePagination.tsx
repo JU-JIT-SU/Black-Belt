@@ -74,7 +74,7 @@ export default function AdminTablePagination({
   const isNextDisabled = disabled || currentPage === totalPages;
 
   return (
-    <footer className="flex flex-col gap-4 border-t border-zinc-200 px-4 py-4 md:flex-row md:items-center md:justify-between">
+    <footer className="flex flex-col gap-4 border-t border-[var(--color-border-medium)] px-4 py-4 md:flex-row md:items-center md:justify-between">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
         <p className="text-sm text-text-secondary">
           총 {totalItems}개 중 {startItem}-{endItem}개 표시
@@ -84,7 +84,7 @@ export default function AdminTablePagination({
           <label className="flex items-center gap-2 text-sm text-text-secondary">
             페이지당
             <select
-              className="h-9 cursor-pointer rounded-md border border-zinc-200 bg-bg-surface px-3 text-sm text-text-primary outline-none transition-colors duration-200 focus:border-btn-focus"
+              className="h-9 cursor-pointer rounded-md border border-[var(--color-border-medium)] bg-bg-surface px-3 text-sm text-text-primary outline-none transition-colors duration-200 focus:border-btn-focus"
               value={pageSize}
               disabled={disabled}
               onChange={(event) => onPageSizeChange(Number(event.target.value))}
@@ -110,7 +110,7 @@ export default function AdminTablePagination({
             aria-disabled={isPreviousDisabled}
             className={cn(
               navigationButtonClass,
-              'cursor-pointer border-zinc-200 bg-bg-surface text-btn-text hover:bg-btn-basic',
+              'cursor-pointer border-[var(--color-border-medium)] bg-bg-surface text-btn-text hover:bg-btn-basic',
             )}
             onClick={() => {
               if (isPreviousDisabled) {
@@ -129,7 +129,7 @@ export default function AdminTablePagination({
                 return (
                   <span
                     key={item}
-                    className="inline-flex h-9 min-w-9 items-center justify-center text-zinc-400"
+                    className="inline-flex h-9 min-w-9 items-center justify-center text-[color:var(--color-text-disabled)]"
                   >
                     <MoreHorizontal className="size-4" />
                   </span>
@@ -149,7 +149,7 @@ export default function AdminTablePagination({
                     'cursor-pointer',
                     isActive
                       ? 'border-btn-focus bg-btn-focus text-btn-focus-text'
-                      : 'border-zinc-200 bg-bg-surface text-btn-text hover:bg-btn-basic',
+                      : 'border-[var(--color-border-medium)] bg-bg-surface text-btn-text hover:bg-btn-basic',
                   )}
                   onClick={() => {
                     if (disabled) {
@@ -171,7 +171,7 @@ export default function AdminTablePagination({
             aria-disabled={isNextDisabled}
             className={cn(
               navigationButtonClass,
-              'cursor-pointer border-zinc-200 bg-bg-surface text-btn-text hover:bg-btn-basic',
+              'cursor-pointer border-[var(--color-border-medium)] bg-bg-surface text-btn-text hover:bg-btn-basic',
             )}
             onClick={() => {
               if (isNextDisabled) {

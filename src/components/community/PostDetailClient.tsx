@@ -281,7 +281,7 @@ export default function PostDetailClient({
                 >
                   <Pencil
                     size={20}
-                    className="text-white/40 hover:text-white/80 transition-colors"
+                    className="text-white/40 hover:text-white/80 transition-colors light:text-black/40 light:hover:text-[#0f1117]"
                   />
                 </button>
                 <button
@@ -293,7 +293,7 @@ export default function PostDetailClient({
                 >
                   <Trash2
                     size={20}
-                    className="text-white/40 hover:text-red-400 transition-colors"
+                    className="text-white/40 hover:text-red-400 transition-colors light:text-black/40"
                   />
                 </button>
               </>
@@ -305,7 +305,7 @@ export default function PostDetailClient({
                 onClick={() => setReportModalOpen(true)}
                 className="p-1"
               >
-                <Flag size={20} className="text-white/40 hover:text-white/80 transition-colors" />
+                <Flag size={20} className="text-white/40 hover:text-white/80 transition-colors light:text-black/40 light:hover:text-[#0f1117]" />
               </button>
             )}
             <button
@@ -315,7 +315,7 @@ export default function PostDetailClient({
               onClick={handleShare}
               className="p-1"
             >
-              <Share2 size={18} className="text-white/40 hover:text-white/80 transition-colors" />
+              <Share2 size={18} className="text-white/40 hover:text-white/80 transition-colors light:text-black/40 light:hover:text-[#0f1117]" />
             </button>
           </>
         }

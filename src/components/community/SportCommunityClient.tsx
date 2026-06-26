@@ -325,7 +325,7 @@ export default function SportCommunityClient({ initialPosts, sport }: SportCommu
               <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-text-high)' }}>공지</span>
             </Link>
 
-            {SPORTS.map(({ slug, name, image, color }) => {
+            {SPORTS.map(({ slug, name, icon, iconSize, color }) => {
               const isActive = slug === sport.slug;
               if (isActive) {
                 return (
@@ -341,12 +341,12 @@ export default function SportCommunityClient({ initialPosts, sport }: SportCommu
                     <div
                       style={{
                         width: '34px', height: '34px', borderRadius: '50%',
-                        background: color + '1a', border: `1.5px solid ${color}66`,
+                        background: color + '33', border: `1.5px solid ${color}88`,
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        flexShrink: 0,
+                        fontSize: iconSize, flexShrink: 0,
                       }}
                     >
-                      <Image src={image} alt={name} width={20} height={20} style={{ objectFit: 'contain' }} />
+                      {icon}
                     </div>
                     <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-text-primary)' }}>{name}</span>
                     <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: color, marginLeft: 'auto', flexShrink: 0 }} />
@@ -373,12 +373,12 @@ export default function SportCommunityClient({ initialPosts, sport }: SportCommu
                   <div
                     style={{
                       width: '34px', height: '34px', borderRadius: '50%',
-                      background: color + '1a', border: `1.5px solid ${color}44`,
+                      background: color + '33', border: `1.5px solid ${color}66`,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      flexShrink: 0,
+                      fontSize: '17px', flexShrink: 0,
                     }}
                   >
-                    <Image src={image} alt={name} width={20} height={20} style={{ objectFit: 'contain' }} />
+                    {icon}
                   </div>
                   <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-text-high)' }}>{name}</span>
                 </Link>
@@ -486,7 +486,7 @@ export default function SportCommunityClient({ initialPosts, sport }: SportCommu
                   </div>
                   <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-text-high)' }}>공지</span>
                 </Link>
-                {SPORTS.map(({ slug, name, image, color }) => {
+                {SPORTS.map(({ slug, name, icon, iconSize, color }) => {
                   const isActive = slug === sport.slug;
                   if (isActive) {
                     return (
@@ -498,12 +498,12 @@ export default function SportCommunityClient({ initialPosts, sport }: SportCommu
                         <div
                           style={{
                             width: '34px', height: '34px', borderRadius: '50%',
-                            background: color + '1a', border: `1.5px solid ${color}66`,
+                            background: color + '33', border: `1.5px solid ${color}88`,
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            flexShrink: 0,
+                            fontSize: '17px', flexShrink: 0,
                           }}
                         >
-                          <Image src={image} alt={name} width={20} height={20} style={{ objectFit: 'contain' }} />
+                          {icon}
                         </div>
                         <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-text-primary)' }}>{name}</span>
                         <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: color, marginLeft: 'auto', flexShrink: 0 }} />
@@ -534,12 +534,12 @@ export default function SportCommunityClient({ initialPosts, sport }: SportCommu
                       <div
                         style={{
                           width: '34px', height: '34px', borderRadius: '50%',
-                          background: color + '1a', border: `1.5px solid ${color}44`,
+                          background: color + '33', border: `1.5px solid ${color}66`,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          flexShrink: 0,
+                          fontSize: '17px', flexShrink: 0,
                         }}
                       >
-                        <Image src={image} alt={name} width={20} height={20} style={{ objectFit: 'contain' }} />
+                        {icon}
                       </div>
                       <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-text-high)' }}>{name}</span>
                     </Link>

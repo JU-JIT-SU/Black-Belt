@@ -90,7 +90,7 @@ export default function WriteClient({ sport }: { sport?: string } = {}) {
             style={
               category === type
                 ? { background: '#2563eb', color: '#fff' }
-                : { background: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.55)' }
+                : { background: 'var(--color-btn-basic)', color: 'var(--color-text-secondary)' }
             }
           >
             {type === 'personal' ? '일반 게시글' : '도장 홍보'}
@@ -100,8 +100,8 @@ export default function WriteClient({ sport }: { sport?: string } = {}) {
     ) : (
       <div
         aria-label={`게시글 유형: ${user?.role === 'admin' ? '공지' : '일반 게시글'}`}
-        className="py-2 px-3 rounded-lg text-sm font-medium text-white text-center"
-        style={{ background: 'rgba(255,255,255,0.1)' }}
+        className="py-2 px-3 rounded-lg text-sm font-medium text-center"
+        style={{ background: 'var(--color-bg-tint)', color: 'var(--color-text-primary)' }}
       >
         {user?.role === 'admin' ? '공지' : '일반 게시글'}
       </div>

@@ -38,7 +38,7 @@ export default function PromoAdSidebar() {
           fontSize: '10px',
           fontWeight: 700,
           letterSpacing: '0.1em',
-          color: 'var(--color-text-disabled)',
+          color: 'var(--color-text-tertiary)',
           textTransform: 'uppercase',
         }}
       >
@@ -97,7 +97,7 @@ export default function PromoAdSidebar() {
                     <p
                       style={{
                         fontSize: '10px',
-                        color: 'var(--color-text-hint)',
+                        color: 'var(--color-text-secondary)',
                         marginBottom: '2px',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
@@ -111,7 +111,7 @@ export default function PromoAdSidebar() {
                     style={{
                       fontSize: '12.5px',
                       fontWeight: 600,
-                      color: 'var(--color-text-high)',
+                      color: 'var(--color-text-primary)',
                       lineHeight: 1.35,
                       display: '-webkit-box',
                       WebkitLineClamp: 2,
@@ -125,7 +125,7 @@ export default function PromoAdSidebar() {
                   <p
                     style={{
                       fontSize: '10.5px',
-                      color: 'var(--color-text-disabled)',
+                      color: 'var(--color-text-secondary)',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap',

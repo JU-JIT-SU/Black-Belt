@@ -19,7 +19,7 @@ export default function PostFormActions({
         type="button"
         onClick={onCancel}
         disabled={isLoading}
-        className="flex-1 py-3 rounded-xl bg-btn-basic   text-white hover:bg-gray-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex-1 py-3 rounded-xl bg-btn-basic text-[color:var(--color-text-primary)] hover:bg-[var(--color-border-medium)] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
       >
         취소
       </button>
@@ -27,9 +27,9 @@ export default function PostFormActions({
         type="button"
         onClick={onSubmit}
         disabled={isLoading}
-        className={`hover:bg-gray-700 flex-3 py-3 rounded-xl text-white text-sm font-medium transition-colors duration-200 ${
+        className={`hover:bg-[var(--color-border-medium)] flex-3 py-3 rounded-xl text-[color:var(--color-text-primary)] text-sm font-medium transition-colors duration-200 ${
           isLoading
-            ? 'bg-gray-400 cursor-not-allowed'
+            ? 'bg-[var(--color-btn-basic)] opacity-50 cursor-not-allowed'
             : 'bg-btn-basic cursor-pointer'
         }`}
       >

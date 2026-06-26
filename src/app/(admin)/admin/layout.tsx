@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import AdminHeader from '@/components/admin/AdminHeader';
+import AdminTopNav from '@/components/admin/AdminTopNav';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ScrollToTop from '@/components/common/ScrollToTop';
-import Sidebar from '@/components/layout/Sidebar';
 import { ADMIN_LAYOUT_METADATA } from '@/constants/adminMeta';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 
@@ -44,12 +44,11 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen bg-bg-page">
-      <div className="w-50 shrink-0" />
-      <Sidebar />
-      <AdminHeader />
-      <main className="flex-1 flex justify-center min-w-0">
-        <div className="w-full max-w-7xl pt-28">
+    <div className="min-h-screen bg-bg-page">
+      <AdminTopNav />
+      <main className="flex justify-center pt-16">
+        <div className="w-full max-w-7xl">
+          <AdminHeader />
           <Suspense fallback={<AdminContentLoading />}>
             <AdminContent>{children}</AdminContent>
           </Suspense>
