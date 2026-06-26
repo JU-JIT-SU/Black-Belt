@@ -1,6 +1,6 @@
 # Activio
 
-> 유도·주짓수·레슬링·복싱·태권도·MMA — 모든 무술 종목 수련자·도장·코치를 하나의 공간에서 연결하는 스포츠 커뮤니티 플랫폼
+> 유도, 주짓수, 레슬링, 복싱, 태권도, MMA — 모든 무술 종목 수련자, 도장, 코치를 하나의 공간에서 연결하는 스포츠 커뮤니티 플랫폼
 
 배포 링크: https://final-project-team3.vercel.app/
 
@@ -20,19 +20,19 @@
 
 ## 프로젝트 소개
 
-| 항목 | 내용 |
-|------|------|
-| 배포 URL | https://final-project-team3.vercel.app/ |
-| 개발 기간 | 2026.04 ~ 진행 중 |
-| 개발 인원 | 4인 (풀스택) |
+| 항목      | 내용                                    |
+| --------- | --------------------------------------- |
+| 배포 URL  | https://final-project-team3.vercel.app/ |
+| 개발 기간 | 2026.04 ~ 진행 중                       |
+| 개발 인원 | 4인 (풀스택)                            |
 
 **테스트 계정**
 
-| 역할 | 이메일 | 비밀번호 |
-|------|--------|----------|
-| 일반 유저 | user@test.com | test1234! |
-| 도장 계정 | dojang@test.com | test1234! |
-| 관리자 | admin@test.com | admin1234! |
+| 역할      | 이메일          | 비밀번호   |
+| --------- | --------------- | ---------- |
+| 일반 유저 | user@test.com   | test1234!  |
+| 도장 계정 | dojang@test.com | test1234!  |
+| 관리자    | admin@test.com  | admin1234! |
 
 ---
 
@@ -72,42 +72,59 @@
 
 **프레임워크 · 언어**
 
-| 기술 | 선택 이유 |
-|------|-----------|
+![Next.js](https://img.shields.io/badge/Next.js_(App_Router)-000000?style=flat-square&logo=next.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/React_19-61DAFB?style=flat-square&logo=react&logoColor=black)
+
+| 기술                 | 선택 이유                                                                                                           |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | Next.js (App Router) | `use cache` 디렉티브 + `revalidateTag`로 공개 데이터를 정적 캐싱하고, 인증 데이터는 Suspense 스트리밍으로 분리 처리 |
-| TypeScript (strict) | 역할 타입(`user`\|`dojang`\|`admin`), 게시글 카테고리, 운동 종목 슬러그 등 도메인 규칙을 타입 레벨에서 강제 |
-| React 19 | 서버/클라이언트 컴포넌트 경계를 명확히 하여 TTI 최적화 |
+| TypeScript (strict)  | 역할 타입(`user`\|`dojang`\|`admin`), 게시글 카테고리, 운동 종목 슬러그 등 도메인 규칙을 타입 레벨에서 강제         |
+| React 19             | 서버/클라이언트 컴포넌트 경계를 명확히 하여 TTI 최적화                                                              |
 
 **스타일**
 
-| 기술 | 선택 이유 |
-|------|-----------|
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_v4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
+
+| 기술            | 선택 이유                                                                                                        |
+| --------------- | ---------------------------------------------------------------------------------------------------------------- |
 | Tailwind CSS v4 | `@custom-variant light`로 라이트 모드 오버라이드 구현, CSS 변수 토큰 기반 테마 시스템으로 하드코딩 없이 유지보수 |
 
 **백엔드 · 데이터베이스**
 
-| 기술 | 선택 이유 |
-|------|-----------|
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=flat-square&logo=supabase&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white)
+
+| 기술                  | 선택 이유                                                                                    |
+| --------------------- | -------------------------------------------------------------------------------------------- |
 | Supabase (PostgreSQL) | RLS 정책으로 역할별 데이터 접근을 DB 레벨에서 통제, CHECK 제약으로 허용되지 않은 상태값 차단 |
-| Supabase Auth | 이메일 기반 인증, 세션·토큰 관리, 역할별 분기 처리 |
-| Supabase Storage | 게시글 이미지·동영상, 사업자등록증, 대회 이미지 버킷 분리 관리 |
+| Supabase Auth         | 이메일 기반 인증, 세션·토큰 관리, 역할별 분기 처리                                           |
+| Supabase Storage      | 게시글 이미지·동영상, 사업자등록증, 대회 이미지 버킷 분리 관리                               |
 
 **상태 관리**
 
-| 기술 | 선택 이유 |
-|------|-----------|
+![TanStack Query](https://img.shields.io/badge/TanStack_Query_v5-FF4154?style=flat-square&logo=reactquery&logoColor=white)
+![Zustand](https://img.shields.io/badge/Zustand-433E38?style=flat-square&logo=react&logoColor=white)
+![Zod](https://img.shields.io/badge/Zod-3E67B1?style=flat-square&logo=zod&logoColor=white)
+
+| 기술              | 선택 이유                                                                                       |
+| ----------------- | ----------------------------------------------------------------------------------------------- |
 | TanStack Query v5 | 무한 스크롤(`useInfiniteQuery`), 낙관적 업데이트(좋아요), `HydrationBoundary`로 SSR 워터폴 방지 |
-| Zustand | 인증 상태·모달 등 전역 UI 상태 관리, `useAuthStore` 단일 구독으로 불필요한 리렌더 방지 |
-| Zod | 폼 스키마를 `schemas/`에 정의하고 `z.infer<>`로 TypeScript 타입과 동기화 |
+| Zustand           | 인증 상태·모달 등 전역 UI 상태 관리, `useAuthStore` 단일 구독으로 불필요한 리렌더 방지          |
+| Zod               | 폼 스키마를 `schemas/`에 정의하고 `z.infer<>`로 TypeScript 타입과 동기화                        |
 
 **인프라 · 도구**
 
-| 기술 | 선택 이유 |
-|------|-----------|
-| Vercel | main 브랜치 자동 배포, Edge Network CDN, 환경변수 격리 |
-| Kakao Maps API | 국내 도로명 주소 정확도가 높고 지도 렌더링·마커 연동이 용이 |
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat-square&logo=vercel&logoColor=white)
+![KakaoMap](https://img.shields.io/badge/Kakao_Maps_API-FFCD00?style=flat-square&logo=kakao&logoColor=black)
+![Resend](https://img.shields.io/badge/Resend-000000?style=flat-square&logo=resend&logoColor=white)
+
+| 기술            | 선택 이유                                                                             |
+| --------------- | ------------------------------------------------------------------------------------- |
+| Vercel          | main 브랜치 자동 배포, Edge Network CDN, 환경변수 격리                                |
+| Kakao Maps API  | 국내 도로명 주소 정확도가 높고 지도 렌더링·마커 연동이 용이                           |
 | Kakao Local API | 키워드 기반 장소 검색, REST API 키를 서버 전용 환경변수로 분리해 클라이언트 노출 차단 |
-| Resend | 신고 접수 알림 이메일 자동 발송 |
+| Resend          | 신고 접수 알림 이메일 자동 발송                                                       |
 
 ---
 
@@ -163,16 +180,16 @@ dojang        id · profile_id → profiles · business_number · representative
 export function createAdminClient() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,  // NEXT_PUBLIC_ 없음 — 클라이언트 번들 미포함
-  )
+    process.env.SUPABASE_SERVICE_ROLE_KEY!, // NEXT_PUBLIC_ 없음 — 클라이언트 번들 미포함
+  );
 }
 ```
 
-| 클라이언트 | cookies | use cache | 용도 |
-|-----------|:-------:|:---------:|------|
-| `supabasePublic` | 없음 | 가능 | 커뮤니티·대회·도장 공개 데이터 |
-| `supabaseServer` | 있음 | 불가 | 마이페이지·글 작성 등 인증 필요 |
-| `supabaseAdmin` | 없음 | — | 패널티 부여·도장 승인·신고 처리 |
+| 클라이언트       | cookies | use cache | 용도                            |
+| ---------------- | :-----: | :-------: | ------------------------------- |
+| `supabasePublic` |  없음   |   가능    | 커뮤니티·대회·도장 공개 데이터  |
+| `supabaseServer` |  있음   |   불가    | 마이페이지·글 작성 등 인증 필요 |
+| `supabaseAdmin`  |  없음   |     —     | 패널티 부여·도장 승인·신고 처리 |
 
 ### 2. `use cache` + `revalidateTag` 캐싱 전략
 
@@ -181,22 +198,22 @@ export function createAdminClient() {
 ```typescript
 // services/communityService.server.ts
 export async function getPosts(page?: number, pageSize?: number) {
-  'use cache'
-  cacheTag('posts-list')
-  cacheLife('minutes')
+  'use cache';
+  cacheTag('posts-list');
+  cacheLife('minutes');
 
-  const supabase = createPublicSupabaseClient()
+  const supabase = createPublicSupabaseClient();
   return supabase
     .from('posts')
     .select('*, profiles(*), comments(count)')
     .is('deleted_at', null)
     .eq('status', 'published')
-    .order('created_at', { ascending: false })
+    .order('created_at', { ascending: false });
 }
 
 // API Route에서 캐시 무효화
-revalidateTag('posts-list')
-revalidateTag(`post-${id}`)
+revalidateTag('posts-list');
+revalidateTag(`post-${id}`);
 ```
 
 ### 3. Soft Delete 패턴
@@ -208,29 +225,26 @@ revalidateTag(`post-${id}`)
 await supabase
   .from('posts')
   .update({ deleted_at: new Date().toISOString() })
-  .eq('id', id)
+  .eq('id', id);
 
 // 조회 — deleted_at IS NULL 필터 필수
-await supabase
-  .from('posts')
-  .select('*')
-  .is('deleted_at', null)
+await supabase.from('posts').select('*').is('deleted_at', null);
 ```
 
 ### 4. 역할 기반 접근 제어 (RBAC)
 
 Supabase RLS 정책으로 DB 레벨에서 역할별 접근을 통제합니다.
 
-| 기능 | user | dojang | admin |
-|------|:----:|:------:|:-----:|
-| 게시글 조회 | ✅ | ✅ | ✅ |
-| 일반 게시글 작성 | ✅ | ✅ | ✅ |
-| 홍보 게시글 작성 | ❌ | ✅ | ✅ |
-| 공지 작성 | ❌ | ❌ | ✅ |
-| 타인 게시글 삭제 | ❌ | ❌ | ✅ |
-| 대회 등록·수정 | ❌ | ✅ | ✅ |
-| 관리자 페이지 | ❌ | ❌ | ✅ |
-| 유저 제재·도장 승인 | ❌ | ❌ | ✅ |
+| 기능                | user | dojang | admin |
+| ------------------- | :--: | :----: | :---: |
+| 게시글 조회         |  ✅  |   ✅   |  ✅   |
+| 일반 게시글 작성    |  ✅  |   ✅   |  ✅   |
+| 홍보 게시글 작성    |  ❌  |   ✅   |  ✅   |
+| 공지 작성           |  ❌  |   ❌   |  ✅   |
+| 타인 게시글 삭제    |  ❌  |   ❌   |  ✅   |
+| 대회 등록·수정      |  ❌  |   ✅   |  ✅   |
+| 관리자 페이지       |  ❌  |   ❌   |  ✅   |
+| 유저 제재·도장 승인 |  ❌  |   ❌   |  ✅   |
 
 ### 5. 댓글 Race Condition 방지
 
@@ -242,9 +256,9 @@ Supabase RLS 정책으로 DB 레벨에서 역할별 접근을 통제합니다.
 // 3단계: 텍스트 정규화로 invisible 문자·공백·대소문자 우회 차단
 function normalize(text: string): string {
   return text
-    .replace(/[​‌﻿­]/g, '')  // invisible 문자 제거
+    .replace(/[​‌﻿­]/g, '') // invisible 문자 제거
     .replace(/\s/g, '')
-    .toLowerCase()
+    .toLowerCase();
 }
 ```
 
@@ -297,12 +311,14 @@ useMutation({
 
 ```typescript
 // 변경 전: body 전체 spread → 임의 필드 주입 가능
-const body = await request.json()
-supabase.from('posts').insert({ ...body, user_id: user.id })
+const body = await request.json();
+supabase.from('posts').insert({ ...body, user_id: user.id });
 
 // 변경 후: 허용된 필드만 destructure
-const { title, content, category, sport, image_url } = await request.json()
-supabase.from('posts').insert({ title, content, category, sport, image_url, user_id: user.id })
+const { title, content, category, sport, image_url } = await request.json();
+supabase
+  .from('posts')
+  .insert({ title, content, category, sport, image_url, user_id: user.id });
 ```
 
 ### 환경변수 관리
@@ -340,7 +356,7 @@ const nextConfig: NextConfig = {
   experimental: {
     staleTimes: { dynamic: 0, static: 30 },
   },
-}
+};
 ```
 
 ### 4. 댓글 어뷰징 및 Race Condition
@@ -356,12 +372,12 @@ const nextConfig: NextConfig = {
 **해결**: URL 쿼리 파라미터로 상태 관리 + Supabase `.range()`로 서버 페이지네이션 전환
 
 ```typescript
-const from = (page - 1) * PAGE_SIZE
-const to = from + PAGE_SIZE - 1
-let query = supabase.from('profiles').select('*')
-if (status !== 'all') query = query.eq('role', status)
-if (search) query = query.ilike('nickname', `%${search}%`)
-const { data } = await query.range(from, to)
+const from = (page - 1) * PAGE_SIZE;
+const to = from + PAGE_SIZE - 1;
+let query = supabase.from('profiles').select('*');
+if (status !== 'all') query = query.eq('role', status);
+if (search) query = query.ilike('nickname', `%${search}%`);
+const { data } = await query.range(from, to);
 ```
 
 ### 6. 도장 회원가입 파일 업로드 순서 문제
@@ -374,10 +390,13 @@ const { data } = await query.range(from, to)
 
 ```typescript
 const onSubmit = async (data: DojangFormType) => {
-  if (!businessFile) { setServerError('사업자등록증을 첨부해주세요.'); return }
-  const businessFileUrl = await uploadBusinessFile(businessFile)  // 1. 먼저 업로드
-  await registerDojang({ ...data, businessFileUrl })              // 2. URL 확보 후 호출
-}
+  if (!businessFile) {
+    setServerError('사업자등록증을 첨부해주세요.');
+    return;
+  }
+  const businessFileUrl = await uploadBusinessFile(businessFile); // 1. 먼저 업로드
+  await registerDojang({ ...data, businessFileUrl }); // 2. URL 확보 후 호출
+};
 ```
 
 ---
@@ -499,23 +518,23 @@ npm run build
 
 ## 개선 사항
 
-| 기능 | 설명 |
-|------|------|
-| `profiles.belt_level` 컬럼 마이그레이션 | 운동 종목을 저장하기 위해 `belt_level` 컬럼을 재활용 중. 명시적인 `sport` 컬럼으로 분리 필요 |
-| 게시글 미리보기 | 작성 폼에서 실제 렌더링 결과를 미리 확인하는 기능 |
-| 인기글 정렬 | 좋아요·조회수 기반 인기글 탭 추가 |
-| 실시간 댓글 | Supabase Realtime을 활용한 새 댓글 실시간 반영 |
-| 소셜 로그인 | Google·Kakao OAuth 연동 |
-| 도장 리뷰 시스템 | 수련생이 도장에 평점과 후기를 남기는 기능 |
+| 기능                                       | 설명                                                                                            |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| `profiles.belt_level` 컬럼 마이그레이션    | 운동 종목을 저장하기 위해 `belt_level` 컬럼을 재활용 중. 명시적인 `sport` 컬럼으로 분리 필요    |
+| 게시글 미리보기                            | 작성 폼에서 실제 렌더링 결과를 미리 확인하는 기능                                               |
+| 인기글 정렬                                | 좋아요·조회수 기반 인기글 탭 추가                                                               |
+| 실시간 댓글                                | Supabase Realtime을 활용한 새 댓글 실시간 반영                                                  |
+| 소셜 로그인                                | Google·Kakao OAuth 연동                                                                         |
+| 도장 리뷰 시스템                           | 수련생이 도장에 평점과 후기를 남기는 기능                                                       |
 | `getCompetitions()` 클라이언트 서비스 구현 | 현재 서버 사이드(`lib/getCompetitions.ts`)로만 처리 중인 목록 조회를 클라이언트 서비스로도 구현 |
 
 ---
 
 ## 팀원 소개
 
-| 이름 | 역할 | GitHub |
-|------|------|--------|
+| 이름   | 역할                                                                              | GitHub                                             |
+| ------ | --------------------------------------------------------------------------------- | -------------------------------------------------- |
 | 사민재 | 환경설정·DB 구성·커뮤니티·대회일정·도장찾기·헤더·캐싱 최적화·접근성 개선·리디자인 | [@smj123432-lab](https://github.com/smj123432-lab) |
-| 문유정 | 피그마 목업 제작·발표·게시글·공유·댓글 | [@myj9713-dev](https://github.com/myj9713-dev) |
-| 이정론 | 관리자 페이지 (유저 관리·도장 승인·대회 일정) | [@holymolyRon](https://github.com/holymolyRon) |
-| 이찬미 | 로그인·아이디/비밀번호 찾기·마이페이지 | [@lcmbook55](https://github.com/lcmbook55) |
+| 문유정 | 피그마 목업 제작·발표·게시글·공유·댓글                                            | [@myj9713-dev](https://github.com/myj9713-dev)     |
+| 이정론 | 관리자 페이지 (유저 관리·도장 승인·대회 일정)                                     | [@holymolyRon](https://github.com/holymolyRon)     |
+| 이찬미 | 로그인·아이디/비밀번호 찾기·마이페이지                                            | [@lcmbook55](https://github.com/lcmbook55)         |
