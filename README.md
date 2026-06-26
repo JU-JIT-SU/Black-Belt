@@ -36,15 +36,9 @@
 
 ---
 
-## 서비스 흐름
+## 시스템 아키텍처 및 비즈니스 로직 플로우
 
-![서비스 흐름](public/docs/service-flow.png)
-
----
-
-## 시스템 아키텍처
-
-![시스템 아키텍처](public/docs/system-architecture.png)
+![비즈니스 로직 플로우](public/docs/business-flow.png)
 
 ---
 
