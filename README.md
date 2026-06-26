@@ -419,6 +419,14 @@ useMutation({
 })
 ```
 
+### 접근성 위반 33건 → 0건
+
+axe-core로 전수 점검했더니 ARIA 패턴 critical 4건, 중복 landmark serious 4건, WCAG AA 색상 대비 미달 serious 25건이 나왔습니다. `role="tablist"` 수정, landmark 구조 재설계, 색상 토큰 재조정으로 33건 전부 잡았고 Lighthouse Accessibility 100점을 찍었습니다.
+
+### 컴포넌트 중복 코드 추출·통합
+
+작성·수정·목록 컴포넌트 6개에 같은 로직이 복붙되어 있었고 합치면 1,054줄이었습니다. `PostFormBase`·`CompetitionFormBase` 공통 컴포넌트와 `useCommunityListState` 훅으로 뽑아낸 뒤 6개 파일 합계가 1,054줄 → 532줄(-49.5%)로 줄었습니다.
+
 ---
 
 ## 보안 설계
@@ -455,103 +463,23 @@ supabase
 
 ## 기술적 도전 및 트러블슈팅
 
-### 1. `use cache` 내부 `cookies()` 접근 불가
-
-**문제**: `use cache` 스코프 안에서 `cookies()`를 호출하는 `createSupabaseServerClient` 사용 시 빌드 오류 발생
-
-**해결**: Supabase 클라이언트를 목적별로 3가지로 나눴습니다. 공개 데이터용 `supabase/public.ts`는 `cookies()` 없이 동작해 `use cache` 스코프에서 쓸 수 있고, 서비스 파일도 `communityService.ts`(클라이언트용)와 `communityService.server.ts`(서버용) 두 벌로 분리했습니다
-
-### 2. 조회수 트리거 이슈 + Hydration 오류
-
-**문제**: 조회수 증가 RPC 호출 시 `'You cannot change view count'` 에러 발생. 이후 캐싱된 `view_count`와 실제 DB 값 불일치로 Hydration 에러 발생
-
-**원인**: DB 트리거 `prevent_non_admin_post_system_update`에서 admin이 아닌 경우 `view_count` 변경 차단. 트리거 수정 후 `use cache`로 캐싱된 값과 실시간 DB 값 불일치
-
-**해결**: 트리거 함수에서 `view_count` 변경 차단 로직 제거 후 RPC 함수에 `SECURITY DEFINER` 적용. 실시간 반영이 필요한 조회수는 캐싱 대상에서 제외, 목록 페이지에서 조회수 표시 제거
-
-### 3. 수정 후 이전 데이터 잔류 (라우터 캐시)
-
-**문제**: 게시글·대회 수정 완료 후 상세 페이지로 이동하면 수정 전 데이터가 표시됨. 새로고침해야 최신 데이터 반영
-
-**원인**: `revalidateTag`는 서버 캐시만 무효화하고, 브라우저 메모리의 Router Cache는 별도로 동작. `cacheLife` 없이 `use cache`만 쓰면 `revalidateTag`와 연동되지 않음
-
-**해결**: 서비스 파일에 `cacheLife('minutes')` 추가. 수정 API에서 `revalidateTag('posts-list')` + `revalidateTag('post-{id}')` 핀포인트 무효화. `next.config.ts`에 `staleTimes: { dynamic: 0 }`으로 라우터 캐시 비활성화
-
-```typescript
-const nextConfig: NextConfig = {
-  experimental: {
-    staleTimes: { dynamic: 0, static: 30 },
-  },
-};
-```
-
-### 4. 댓글 어뷰징 및 Race Condition
-
-**문제**: 클라이언트에서 Supabase 직접 호출 구조라 쿨타임 체크가 `Promise.all` 동시 요청 시 무력화됨
-
-**해결**: `/api/comments` Route Handler로 옮겨 서버에서 쿨타임·중복·연속 작성을 검사하고, DB 트리거로 INSERT 자체를 막아 Race Condition을 끊었습니다. invisible 문자·공백·대소문자 정규화로 우회도 차단했습니다
-
-### 5. 관리자 테이블 서버 페이지네이션 전환
-
-**문제**: 전체 데이터를 한 번에 가져온 후 클라이언트에서 `slice`로 페이지네이션 처리. 데이터 증가 시 성능 저하, 새로고침 시 검색·필터 상태 초기화
-
-**해결**: URL 쿼리 파라미터로 상태 관리 + Supabase `.range()`로 서버 페이지네이션 전환
-
-```typescript
-const from = (page - 1) * PAGE_SIZE;
-const to = from + PAGE_SIZE - 1;
-let query = supabase.from('profiles').select('*');
-if (status !== 'all') query = query.eq('role', status);
-if (search) query = query.ilike('nickname', `%${search}%`);
-const { data } = await query.range(from, to);
-```
-
-### 7. Soft Delete 필터 누락 — 삭제 데이터 응답 포함
+### 1. Soft Delete 필터 누락 — 삭제 데이터 응답 포함
 
 **문제**: API 3곳에서 `deleted_at IS NULL` 필터가 빠져 있어 삭제된 게시글·댓글이 응답에 섞여 나왔습니다
 
 **해결**: `api/posts`, `api/comments`, `api/comments/[id]` 조회 쿼리 전체에 `.is('deleted_at', null)` 필터를 추가했습니다. 삭제 데이터 노출 0건으로 차단됐습니다
 
-### 8. admin 콘텐츠 관리 권한 오류
+### 2. admin 콘텐츠 관리 권한 오류
 
 **문제**: `user·dojang·admin` 역할 시스템에서 admin이 다른 사용자 게시글을 삭제할 때 권한 오류가 발생했습니다. 역할을 중첩 조건으로 체크하다가 admin 분기가 제대로 걸리지 않은 것이 원인이었습니다
 
 **해결**: `contentPermissions.ts`의 `canManageContent` 함수를 `currentUserRole === 'admin' || currentUserId === authorUserId` 단순 조건으로 정리해 admin이 모든 역할의 콘텐츠를 관리할 수 있도록 했습니다
 
-### 9. SSR initialData → queryKey 직렬화로 인한 불필요한 refetch
+### 3. SSR initialData → queryKey 직렬화로 인한 불필요한 refetch
 
 **문제**: `useCommunity`·`useCompetition`에서 SSR initialData를 `JSON.stringify`로 직렬화한 값을 queryKey에 넣었습니다. 마운트마다 참조가 달라져 TanStack Query가 캐시 미스로 판단하고 API를 재요청했습니다
 
 **해결**: queryKey를 `['posts']`·`['competition']` 고정 문자열로 바꾸고 `initialDataUpdatedAt`을 상수로 처리해 마운트 시 불필요한 refetch를 없앴습니다
-
-### 6. 도장 회원가입 파일 업로드 순서 문제
-
-**문제**: 도장 회원가입 시 `businessFileUrl`이 `undefined`인 상태로 `profiles` 테이블에 저장됨
-
-**원인**: 파일 URL을 받아오기 전에 회원가입 API가 먼저 호출되는 비동기 순서 오류
-
-**해결**: 파일 업로드를 먼저 완료한 후 URL을 받아 API 호출하도록 순서 수정
-
-```typescript
-const onSubmit = async (data: DojangFormType) => {
-  if (!businessFile) {
-    setServerError('사업자등록증을 첨부해주세요.');
-    return;
-  }
-  const businessFileUrl = await uploadBusinessFile(businessFile); // 1. 먼저 업로드
-  await registerDojang({ ...data, businessFileUrl }); // 2. URL 확보 후 호출
-};
-```
-
----
-
-### 접근성 위반 33건 → 0건
-
-axe-core로 전수 점검했더니 ARIA 패턴 critical 4건, 중복 landmark serious 4건, WCAG AA 색상 대비 미달 serious 25건이 나왔습니다. `role="tablist"` 수정, landmark 구조 재설계, 색상 토큰 재조정으로 33건 전부 잡았고 Lighthouse Accessibility 100점을 찍었습니다.
-
-### 컴포넌트 중복 코드 추출·통합
-
-작성·수정·목록 컴포넌트 6개에 같은 로직이 복붙되어 있었고 합치면 1,054줄이었습니다. `PostFormBase`·`CompetitionFormBase` 공통 컴포넌트와 `useCommunityListState` 훅으로 뽑아낸 뒤 6개 파일 합계가 1,054줄 → 532줄(-49.5%)로 줄었습니다.
 
 ---
 
