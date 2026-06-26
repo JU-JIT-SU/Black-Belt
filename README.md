@@ -30,9 +30,9 @@
 
 | 역할      | 이메일          | 비밀번호   |
 | --------- | --------------- | ---------- |
-| 일반 유저 | user@test.com   | test1234!  |
-| 도장 계정 | dojang@test.com | test1234!  |
-| 관리자    | admin@test.com  | admin1234! |
+| 일반 유저 | user@naver.com   | test1234!  |
+| 도장 계정 | dojang@gmail.com | dojang1234!  |
+| 관리자    | admin@naver.com  | admin1234! |
 
 **팀원 소개**
 
