@@ -38,10 +38,10 @@
 
 | 이름   | 역할                                                                              | GitHub                                             |
 | ------ | --------------------------------------------------------------------------------- | -------------------------------------------------- |
-| 사민재 | 환경설정·DB 구성·커뮤니티·대회일정·도장찾기·헤더·캐싱 최적화·접근성 개선·리디자인 | [@smj123432-lab](https://github.com/smj123432-lab) |
-| 문유정 | 피그마 목업 제작·발표·게시글·공유·댓글                                            | [@myj9713-dev](https://github.com/myj9713-dev)     |
-| 이정론 | 관리자 페이지 (유저 관리·도장 승인·대회 일정)                                     | [@holymolyRon](https://github.com/holymolyRon)     |
-| 이찬미 | 로그인·아이디/비밀번호 찾기·마이페이지                                            | [@lcmbook55](https://github.com/lcmbook55)         |
+| 사민재 | 환경설정, DB 구성, 커뮤니티, 대회일정, 도장찾기, 헤더, 캐싱 최적화, 접근성 개선, 리디자인 | [@smj123432-lab](https://github.com/smj123432-lab) |
+| 문유정 | 피그마 목업 제작, 발표, 게시글, 공유, 댓글, 캐싱 최적화, 접근성 개선, 리디자인              | [@myj9713-dev](https://github.com/myj9713-dev)     |
+| 이정론 | 관리자 페이지 (유저 관리, 도장 승인, 대회 일정, 고객지원),캐싱 최적화, 접근성 개선, 리디자인                | [@holymolyRon](https://github.com/holymolyRon)     |
+| 이찬미 | 로그인 아이디/비밀번호 찾기, 마이페이지, 캐싱 최적화, 접근성 개선, 리디자인                             | [@lcmbook55](https://github.com/lcmbook55)         |
 
 ---
 
@@ -601,10 +601,9 @@ src/
 ```env
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-NEXT_PUBLIC_KAKAO_MAP_KEY=
-KAKAO_REST_API_KEY=
+NEXT_PUBLIC_NAVER_MAP_CLIENT_ID=
 NEXT_PUBLIC_KAKAO_LOCAL_API_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
 RESEND_API_KEY=
 ADMIN_REPORT_EMAIL=
 REPORT_EMAIL_FROM=
